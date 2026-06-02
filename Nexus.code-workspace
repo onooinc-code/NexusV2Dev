@@ -1,0 +1,16 @@
+{
+  "folders": [
+    {
+      "path": "Nexus-Frontend",
+    },
+    {
+      "path": "Nexus-backend",
+    },
+    {
+      "path": "NexusDev",
+    },
+    {
+      "path": ".",
+    },
+  ],
+}

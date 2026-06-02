@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexusV2 - خارطة الطريق التفاعلية</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --surface-color: #1e293b;
+            --primary-color: #3b82f6;
+            --primary-hover: #2563eb;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #10b981;
+            --border: #334155;
+            --warning: #f59e0b;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+
+        .tab-btn {
+            background-color: var(--surface-color);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+        }
+
+        .tab-content {
+            display: none;
+            background-color: var(--surface-color);
+            padding: 2rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border);
+            animation: fadeIn 0.4s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 { color: var(--primary-color); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+        h3 { color: var(--accent); margin-top: 1.5rem; }
+
+        .code-block {
+            background-color: #000;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border);
+            position: relative;
+            direction: ltr;
+            text-align: left;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            color: #10b981;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95rem;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .copy-btn:hover { background: var(--primary-hover); }
+
+        ul { padding-inline-start: 1.5rem; }
+        li { margin-bottom: 0.5rem; }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: rgba(255,255,255,0.02);
+            border-radius: 0.5rem;
+            border-right: 4px solid var(--border);
+        }
+
+        .checklist-item.important { border-right-color: var(--warning); }
+        .checklist-item input[type="checkbox"] { margin-top: 0.3rem; transform: scale(1.2); }
+
+        .alert {
+            background-color: rgba(245, 158, 11, 0.1);
+            border: 1px solid var(--warning);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+            color: #fcd34d;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>NexusV2 - خارطة الطريق التنظيمية والتطويرية</h1>
+        <p class="subtitle">الدليل الشامل لفصل المشاريع، إدارة سير العمل، وإطلاق الإنتاج</p>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab('tab-repos')">1. فصل وإدارة المستودعات (Repos)</button>
+        <button class="tab-btn" onclick="openTab('tab-ai')">2. خطة عمل وكلاء الذكاء الاصطناعي (AI Agents)</button>
+        <button class="tab-btn" onclick="openTab('tab-ide')">3. سير عمل الـ IDE و Git</button>
+        <button class="tab-btn" onclick="openTab('tab-guide')">4. دليل الإكتمال (Project Guide)</button>
+        <button class="tab-btn" onclick="openTab('tab-checklist')">5. قائمة التحقق (Checklist)</button>
+    </div>
+
+    <!-- TAB 1: Repositories -->
+    <div id="tab-repos" class="tab-content active">
+        <h2>1. فصل المستودعات (Git Repositories)</h2>
+        <p>بسبب التداخل بين الفرونت اند والباك اند والوثائق، الحل الأمثل هو فصلهم لـ 3 مستودعات (Repos)، واستخدام نظام (Git Submodules) لربطهم في مكان واحد.</p>
+        
+        <div class="alert">
+            <strong>تحذير هام:</strong> هذه الأوامر ستقوم بمسح تتبع Git القديم (ملفات .git) لتنظيف المشروع بالكامل وبدء تتبع جديد مفصول. تأكد من حفظ أي تغييرات غير محفوظة قبل التنفيذ.
+        </div>
+
+        <h3>خطوات التنفيذ عبر PowerShell:</h3>
+        <p>افتح الـ Terminal في مسار المشروع الرئيسي <code>NexusV2</code> وقم بنسخ وتشغيل الكود التالي خطوة بخطوة:</p>
+        
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">نسخ</button>
+<pre><code># 1. إزالة ملفات Git القديمة لتنظيف المشروع
+Remove-Item -Recurse -Force .git -ErrorAction SilentlyContinue
+Remove-Item -Recurse -Force .\Nexus-Frontend\.git -ErrorAction SilentlyContinue
+Remove-Item -Recurse -Force .\Nexus-backend\.git -ErrorAction SilentlyContinue
+
+# 2. إنشاء مستودع الفرونت اند
+cd Nexus-Frontend
+git init
+git add .
+git commit -m "Initial commit for Nexus Frontend"
+cd ..
+
+# 3. إنشاء مستودع الباك اند
+cd Nexus-backend
+git init
+git add .
+git commit -m "Initial commit for Nexus Backend"
+cd ..
+
+# 4. إنشاء مستودع الجذر (Root) للوثائق وربط المشاريع
+git init
+# إضافة المشاريع الفرعية (عليك إنشاء مستودعات فارغة على GitHub واستبدال الروابط لاحقاً)
+# git submodule add <رابط_الفرونت_اند_على_جيت_هاب> Nexus-Frontend
+# git submodule add <رابط_الباك_اند_على_جيت_هاب> Nexus-backend
+
+git add NexusV2_Docs Nexus-Docs .gitignore
+git commit -m "Initial commit with documentation"
+</code></pre>
+        </div>
+        <p><strong>ملاحظة:</strong> لتفعيل الـ submodules بشكل صحيح، ستحتاج لإنشاء 3 مستودعات على GitHub أولاً (Backend, Frontend, Root) ورفع الكود لكل واحد منها بشكل منفصل.</p>
+    </div>
+
+    <!-- TAB 2: AI Agents -->
+    <div id="tab-ai" class="tab-content">
+        <h2>2. خطة التطوير والتعامل مع AI Agents</h2>
+        <p>لضمان أن الـ AI Agent يعمل بشكل صحيح بدون أن يخرب المشروع أو يفقد السياق، اتبع هذه القواعد:</p>
+
+        <h3>كيف تفهمه سياق المشروع؟</h3>
+        <ul>
+            <li>لا تجعل الـ AI يبحث في المشروع بالكامل. قم بإنشاء ملف باسم <code>.ai-context.md</code> في كل مسار (واحد للباك اند وواحد للفرونت اند) واكتب فيه الهيكلية والقواعد والتقنيات المستخدمة.</li>
+            <li>عند طلب أي تعديل، اطلب منه قراءة ملف <code>ARCHITECTURE_ANALYSIS.md</code> أولاً.</li>
+        </ul>
+
+        <h3>كيف تتأكد من عمله وتنفيذه للمهام؟</h3>
+        <ul>
+            <li><strong>التجزئة (Micro-Tasks):</strong> لا تطلب منه "بناء ميزة الـ Chat". اطلب منه أولاً "تصميم مخطط قاعدة البيانات للـ Chat"، ثم "إنشاء الـ API Endpoint"، ثم "ربط الفرونت اند".</li>
+            <li><strong>طلب الإثبات (Tests):</strong> اجعله يكتب Unit Tests أو يشرح لك كيف تقوم باختبار الميزة يدوياً قبل أن تطلب منه إكمال كتابة الكود.</li>
+            <li><strong>تقييد الأوامر:</strong> اطلب منه عدم تعديل أي ملف خارج النطاق الذي تحدده له.</li>
+        </ul>
+
+        <h3>كيف تتأكد من تحديثه للوثائق؟</h3>
+        <ul>
+            <li>اجعل القاعدة رقم 1 في أوامرك: <strong>"بعد الانتهاء من الكود والتأكد من عمله، قم بتحديث ملف الوثائق الخاص بهذه الميزة في مجلد NexusV2_Docs".</strong></li>
+            <li>قم بمراجعة ملف الوثائق بعده لتتأكد أنه أضاف الـ Endpoints أو الـ Components الجديدة.</li>
+        </ul>
+    </div>
+
+    <!-- TAB 3: IDE & Git Workflow -->
+    <div id="tab-ide" class="tab-content">
+        <h2>3. سير العمل الصحيح من الـ IDE (VSCode / Cursor)</h2>
+        <p>بما أن المشروع أصبح 3 مستودعات (Repos)، فإن فتح المجلد الرئيسي قد يسبب لك لخبطة. الحل الأفضل هو استخدام <strong>Multi-root Workspace</strong>.</p>
+
+        <h3>إعداد بيئة العمل (Workspace)</h3>
+        <ul>
+            <li>من الـ IDE، قم باختيار <code>File > Add Folder to Workspace</code> وأضف مجلد <code>Nexus-Frontend</code>.</li>
+            <li>كرر العملية وأضف <code>Nexus-backend</code> ومجلد الوثائق <code>NexusV2_Docs</code>.</li>
+            <li>احفظ مساحة العمل: <code>File > Save Workspace As</code> واسمها <code>Nexus.code-workspace</code>.</li>
+        </ul>
+
+        <h3>خطوات الـ Push والـ Merge اليومية</h3>
+        <p>عندما تعمل على ميزة معينة، ستعمل إما على الفرونت اند أو الباك اند أو كلاهما. الخطوات كالتالي:</p>
+        <ol>
+            <li><strong>تحديث الكود محلياً:</strong> افتح الـ Terminal الخاص بالقسم الذي تعمل فيه واكتب <code>git pull origin main</code>.</li>
+            <li><strong>إنشاء فرع جديد:</strong> لا تعمل على <code>main</code> مباشرة. اكتب: <code>git checkout -b feature/my-new-feature</code>.</li>
+            <li><strong>حفظ التعديلات:</strong> بعد الانتهاء، من واجهة الـ Source Control في الـ IDE، اضغط على <code>+</code> (Stage) للملفات المعدلة.</li>
+            <li><strong>كتابة الوصف:</strong> اكتب رسالة واضحة (مثال: <code>feat: add user login API</code>) ثم اضغط <strong>Commit</strong>.</li>
+            <li><strong>الرفع (Push):</strong> اضغط على <strong>Publish Branch</strong> أو اكتب <code>git push origin feature/my-new-feature</code>.</li>
+            <li><strong>الدمج (Merge):</strong> اذهب إلى GitHub واعمل Pull Request (PR) ثم ادمجه مع الـ main.</li>
+        </ol>
+    </div>
+
+    <!-- TAB 4: Project Guide -->
+    <div id="tab-guide" class="tab-content">
+        <h2>4. الدليل الفني للإكتمال (Project Completion Guide)</h2>
+        <p>تم حفظ نسخة Markdown من هذا الدليل في: <code>NexusV2_Docs/project_completion_guide.md</code></p>
+        
+        <h3>4.1 الهيكل المعماري</h3>
+        <ul>
+            <li><strong>الفرونت اند (Next.js):</strong> يعتمد على مكونات معزولة (Components)، استخدام صارم لـ TypeScript، وإدارة حالة (State Management) مركزية.</li>
+            <li><strong>الباك اند (Laravel/Python):</strong> فصل الخدمات إلى Microservices أو وحدات مستقلة (Modular). الاعتماد الكلي على الـ Queues للمهام الثقيلة (مثل WAHA API).</li>
+        </ul>
+
+        <h3>4.2 متطلبات التشغيل والتطوير</h3>
+        <ul>
+            <li>توحيد بيئات العمل (Environment Variables) وتأمين ملفات <code>.env</code> بحيث لا ترفع أبداً على GitHub.</li>
+            <li>تطبيق أنظمة فحص جودة الكود (Linting & Formatting) أوتوماتيكياً قبل أي Commit.</li>
+        </ul>
+
+        <h3>4.3 متطلبات الإطلاق (Deployment)</h3>
+        <ul>
+            <li>استخدام منصات مخصصة (مثال: Vercel للفرونت اند، و Laravel Forge أو VPS مخصص للباك اند).</li>
+            <li>تفعيل CI/CD Pipelines عبر GitHub Actions لعمل Tests أوتوماتيكية عند الرفع.</li>
+            <li>تفعيل أدوات المراقبة (Monitoring) مثل Sentry لاصطياد الأخطاء قبل أن يبلغ عنها المستخدم.</li>
+        </ul>
+    </div>
+
+    <!-- TAB 5: Checklist -->
+    <div id="tab-checklist" class="tab-content">
+        <h2>5. قائمة مهام الوصول للإنتاج (Development Checklist)</h2>
+        <p>تم حفظ نسخة Markdown من هذه القائمة في: <code>NexusV2_Docs/development_checklist.md</code></p>
+
+        <div class="checklist-item important">
+            <input type="checkbox" id="c1">
+            <label for="c1">
+                <strong>المرحلة الأولى: فصل المشاريع</strong><br>
+                أخذ نسخة احتياطية من الكود الحالي، وحذف ملفات git القديمة، وتهيئة 3 مستودعات جديدة (Frontend, Backend, Root).
+            </label>
+        </div>
+
+        <div class="checklist-item">
+            <input type="checkbox" id="c2">
+            <label for="c2">
+                <strong>المرحلة الثانية: بيئة الذكاء الاصطناعي</strong><br>
+                إنشاء ملف <code>.ai-context.md</code> يحتوي على قواعد وأدلة لكل مشروع لضمان عدم تخبط الـ AI.
+            </label>
+        </div>
+
+        <div class="checklist-item">
+            <input type="checkbox" id="c3">
+            <label for="c3">
+                <strong>المرحلة الثالثة: سير العمل</strong><br>
+                إعداد Multi-root Workspace في الـ IDE والالتزام بإنشاء فروع (Branches) لكل ميزة.
+            </label>
+        </div>
+
+        <div class="checklist-item important">
+            <input type="checkbox" id="c4">
+            <label for="c4">
+                <strong>المرحلة الرابعة: إكمال التطوير الأساسي</strong><br>
+                إنهاء ContactHub, NexusConnectHub، وتصحيح أخطاء الـ API Timeouts.
+            </label>
+        </div>
+
+        <div class="checklist-item">
+            <input type="checkbox" id="c5">
+            <label for="c5">
+                <strong>المرحلة الخامسة: الاختبارات (Testing)</strong><br>
+                إجراء اختبارات شاملة للباك اند (Endpoints) والفرونت اند (Components)، والضغط على النظام للتأكد من استقراره.
+            </label>
+        </div>
+
+        <div class="checklist-item">
+            <input type="checkbox" id="c6">
+            <label for="c6">
+                <strong>المرحلة السادسة: بيئة الاختبار (Staging)</strong><br>
+                رفع النظام على سيرفرات تجريبية مطابقة لبيئة الإنتاج لاختبار النظام ككل عبر الويب.
+            </label>
+        </div>
+
+        <div class="checklist-item important">
+            <input type="checkbox" id="c7">
+            <label for="c7">
+                <strong>المرحلة السابعة: الإنتاج والإطلاق (Production)</strong><br>
+                تجهيز السيرفرات النهائية، تفعيل أنظمة المراقبة (Sentry)، الإطلاق الرسمي للنظام، ومراقبة الـ Logs لأول 48 ساعة.
+            </label>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function openTab(tabId) {
+        // Hide all tabs
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        // Show selected tab
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+
+    function copyCode(btn) {
+        const codeBlock = btn.nextElementSibling.innerText;
+        navigator.clipboard.writeText(codeBlock).then(() => {
+            const originalText = btn.innerText;
+            btn.innerText = 'تم النسخ!';
+            setTimeout(() => {
+                btn.innerText = originalText;
+            }, 2000);
+        });
+    }
+</script>
+
+</body>
+</html>

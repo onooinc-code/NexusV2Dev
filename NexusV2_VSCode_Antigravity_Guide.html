@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دليل ربط NexusV2 بـ VSCode و Antigravity</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --surface-color: #1e293b;
+            --primary-color: #8b5cf6;
+            --primary-hover: #7c3aed;
+            --secondary-color: #3b82f6;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #10b981;
+            --border: #334155;
+            --warning: #f59e0b;
+            --error: #ef4444;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2.5rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .card {
+            background-color: var(--surface-color);
+            padding: 2rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h2 {
+            color: var(--secondary-color);
+            margin-top: 0;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .code-block {
+            background-color: #000;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border);
+            position: relative;
+            direction: ltr;
+            text-align: left;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        .code-block code {
+            color: #10b981;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95rem;
+            white-space: pre-wrap;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .copy-btn:hover { background: var(--primary-hover); }
+
+        .alert {
+            background-color: rgba(245, 158, 11, 0.1);
+            border: 1px solid var(--warning);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+            color: #fcd34d;
+        }
+        
+        .alert-error {
+            background-color: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--error);
+            color: #fca5a5;
+        }
+
+        .step-badge {
+            background-color: var(--primary-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin-left: 0.5rem;
+            font-weight: bold;
+        }
+
+        .prompt-example {
+            background-color: rgba(59, 130, 246, 0.1);
+            border-right: 4px solid var(--secondary-color);
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .prompt-example h4 {
+            color: var(--secondary-color);
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>دليل التطوير بـ VSCode & Antigravity</h1>
+        <p class="subtitle">كيف تصلح مشكلة الـ Git، تجهز بيئة العمل، وتوجه الذكاء الاصطناعي بشكل احترافي كل مرة.</p>
+    </header>
+
+    <div class="card">
+        <h2><span class="step-badge">1</span> إصلاح وتفعيل الـ Repositories الجديدة</h2>
+        
+        <div class="alert alert-error">
+            <strong>إحساسك في محله!</strong> أنت قمت بكتابة <code>git init</code> و <code>git commit</code> ولكنك لم تقم بربط الكود بالروابط الجديدة على GitHub ولم تستخدم أوامر الـ Submodules في المجلد الرئيسي.
+        </div>
+        
+        <p>لتصحيح الوضع الحالي ورفع الكود بشكل نظيف، افتح الـ Terminal <strong>في المجلد الرئيسي NexusV2</strong> وقم بتشغيل هذه الأوامر بالترتيب:</p>
+
+        <h3>أولاً: رفع الفرونت اند</h3>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">نسخ</button>
+<pre><code>cd Nexus-Frontend
+git remote add origin https://github.com/onooinc-code/NexusV2Dev_Frontend.git
+git push -u origin master
+cd ..</code></pre>
+        </div>
+
+        <h3>ثانياً: رفع الباك اند</h3>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">نسخ</button>
+<pre><code>cd Nexus-backend
+git remote add origin https://github.com/onooinc-code/NexusV2Dev_Backend.git
+git push -u origin master
+cd ..</code></pre>
+        </div>
+
+        <h3>ثالثاً: تجهيز ورفع المشروع الرئيسي (Root) مع الـ Submodules</h3>
+        <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">نسخ</button>
+<pre><code># إزالة المجلدات من التتبع العادي (لتجنب رفعها كمجلدات فارغة)
+git rm -r --cached Nexus-Frontend
+git rm -r --cached Nexus-backend
+
+# إضافتهم بطريقة الـ Submodules الصحيحة
+git submodule add https://github.com/onooinc-code/NexusV2Dev_Frontend.git Nexus-Frontend
+git submodule add https://github.com/onooinc-code/NexusV2Dev_Backend.git Nexus-backend
+
+# حفظ ورفع المشروع الرئيسي
+git commit -m "chore: setup submodules and master project"
+git remote add origin https://github.com/onooinc-code/NexusV2Dev.git
+git push -u origin master</code></pre>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span class="step-badge">2</span> تجهيز VSCode كـ Multi-root Workspace</h2>
+        <p>لكي لا يتلخبط Antigravity أو GitHub Copilot أو Cursor بين ملفات الفرونت والباك اند، يجب ألا تفتح مجلد <code>NexusV2</code> بالكامل.</p>
+        
+        <ol>
+            <li>افتح VSCode وقم بإغلاق أي مشروع مفتوح <code>File > Close Folder</code>.</li>
+            <li>اذهب إلى <code>File > Add Folder to Workspace</code> واختر مجلد <code>Nexus-Frontend</code>.</li>
+            <li>كرر الخطوة السابقة وأضف مجلد <code>Nexus-backend</code>، ثم كررها وأضف <code>NexusDev</code>.</li>
+            <li>اذهب إلى <code>File > Save Workspace As</code> واحفظ الملف باسم <code>Nexus.code-workspace</code> في مجلد المشروع الرئيسي.</li>
+        </ol>
+        <p><strong>لماذا هذا مهم جداً؟</strong> الآن الـ VSCode و Antigravity سيتعاملان مع الفرونت اند كمشروع Node.js مستقل، ومع الباك اند كمشروع Laravel مستقل، ولن يحدث تداخل في أوامر الـ Terminal أو البحث.</p>
+    </div>
+
+    <div class="card">
+        <h2><span class="step-badge">3</span> كيف تكلم Antigravity في كل جلسة تطوير؟</h2>
+        <p>السر في الحصول على كود يعمل بنسبة 100% وبدون أن يخرب الـ AI المشروع هو <strong>تحديد النطاق (Scoping)</strong>.</p>
+        
+        <div class="prompt-example">
+            <h4>مثال 1: البدء بمهمة جديدة في الباك اند</h4>
+            <p><strong>الرسالة لـ Antigravity:</strong><br>
+            "مرحباً. أريدك أن تفتح ملف <code>NexusDev/02_Backend_Missing_Requirements.md</code> وتقرأ المشكلة رقم 1 الخاصة بـ (AgentsHub MCP Pivot). افتح ملفات الباك اند المتعلقة بهذه المشكلة، قم بكتابة Test يثبت وجود المشكلة، ثم قم بإصلاحها في الـ Model وتحديث الـ Migration. لا تقم بأي شيء آخر خارج هذا النطاق."</p>
+        </div>
+
+        <div class="prompt-example">
+            <h4>مثال 2: بناء واجهة في الفرونت اند مكملة للباك اند</h4>
+            <p><strong>الرسالة لـ Antigravity:</strong><br>
+            "لقد أنهينا لتونا تحديثات الباك اند الخاصة بـ SchedulerHub. افتح مجلد الفرونت اند الآن <code>Nexus-Frontend</code>. اقرأ ملف <code>NexusDev/01_Frontend_Missing_Requirements.md</code> المتعلق بـ SchedulerHub. أريدك أن تنشئ API Client باستخدام Axios لربط الواجهة بالباك اند الجديد، ثم قم بتحديث ملف <code>SchedulerTab.tsx</code> لعرض البيانات الحقيقية وتفعيل زر الإيقاف والتشغيل."</p>
+        </div>
+
+        <div class="prompt-example">
+            <h4>مثال 3: مراجعة الكود والرفع (Commit & Push)</h4>
+            <p><strong>الرسالة لـ Antigravity:</strong><br>
+            "الآن وقد تأكدنا أن الكود يعمل واجتاز الـ Tests، أريدك أن: <br>
+            1- تحدث ملفات الوثائق في <code>NexusV2_Docs</code> بما قمنا به اليوم.<br>
+            2- قم بإنشاء رسالة Commit احترافية بناءً على التغييرات في الباك اند."</p>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function copyCode(btn) {
+        const codeBlock = btn.nextElementSibling.innerText;
+        navigator.clipboard.writeText(codeBlock).then(() => {
+            const originalText = btn.innerText;
+            btn.innerText = 'تم النسخ!';
+            setTimeout(() => {
+                btn.innerText = originalText;
+            }, 2000);
+        });
+    }
+</script>
+
+</body>
+</html>

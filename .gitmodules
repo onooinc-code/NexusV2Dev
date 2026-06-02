@@ -1,0 +1,6 @@
+[submodule "Nexus-Frontend"]
+	path = Nexus-Frontend
+	url = https://github.com/onooinc-code/NexusV2Dev_Frontend.git
+[submodule "Nexus-backend"]
+	path = Nexus-backend
+	url = https://github.com/onooinc-code/NexusV2Dev_Backend.git
