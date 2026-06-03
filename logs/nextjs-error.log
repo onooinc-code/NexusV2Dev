@@ -1,4 +1,87 @@
-SyntaxError: Unexpected end of JSON input
-    at JSON.parse (<anonymous>)
-SyntaxError: Unexpected end of JSON input
-    at JSON.parse (<anonymous>)
+ ⨯ ./app/globals.css.webpack[javascript/auto]!=!./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[3]!./app/globals.css
+Error: Cannot find module '../lightningcss.win32-x64-msvc.node'
+Require stack:
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\lightningcss\node\index.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\@tailwindcss\node\dist\index.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\@tailwindcss\postcss\dist\index.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\build\webpack\config\blocks\css\index.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\build\webpack\config\index.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\build\webpack-config.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\server\dev\hot-reloader-webpack.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\server\lib\router-server.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\server\lib\start-server.js
+Import trace for requested module:
+./app/globals.css.webpack[javascript/auto]!=!./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[3]!./app/globals.css
+./app/globals.css
+ ⨯ ./app/globals.css.webpack[javascript/auto]!=!./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[3]!./app/globals.css
+Error: Cannot find module '../lightningcss.win32-x64-msvc.node'
+Require stack:
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\lightningcss\node\index.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\@tailwindcss\node\dist\index.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\@tailwindcss\postcss\dist\index.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\build\webpack\config\blocks\css\index.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\build\webpack\config\index.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\build\webpack-config.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\server\dev\hot-reloader-webpack.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\server\lib\router-server.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\server\lib\start-server.js
+Import trace for requested module:
+./app/globals.css.webpack[javascript/auto]!=!./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[3]!./app/globals.css
+./app/globals.css
+ ⚠ Blocked cross-origin request from 127.0.0.1 to /_next/* resource. To allow this, configure "allowedDevOrigins" in next.config
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+ ⨯ ./app/globals.css.webpack[javascript/auto]!=!./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[3]!./app/globals.css
+Error: Cannot find module '../lightningcss.win32-x64-msvc.node'
+Require stack:
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\lightningcss\node\index.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\@tailwindcss\node\dist\index.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\@tailwindcss\postcss\dist\index.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\build\webpack\config\blocks\css\index.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\build\webpack\config\index.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\build\webpack-config.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\server\dev\hot-reloader-webpack.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\server\lib\router-server.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\server\lib\start-server.js
+Import trace for requested module:
+./app/globals.css.webpack[javascript/auto]!=!./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[3]!./app/globals.css
+./app/globals.css
+ ⨯ ./app/globals.css.webpack[javascript/auto]!=!./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[3]!./app/globals.css
+Error: Cannot find module '../lightningcss.win32-x64-msvc.node'
+Require stack:
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\lightningcss\node\index.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\@tailwindcss\node\dist\index.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\@tailwindcss\postcss\dist\index.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\build\webpack\config\blocks\css\index.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\build\webpack\config\index.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\build\webpack-config.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\server\dev\hot-reloader-webpack.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\server\lib\router-server.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\server\lib\start-server.js
+Import trace for requested module:
+./app/globals.css.webpack[javascript/auto]!=!./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[3]!./app/globals.css
+./app/globals.css
+ ⨯ ./app/globals.css.webpack[javascript/auto]!=!./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[3]!./app/globals.css
+Error: Cannot find module '../lightningcss.win32-x64-msvc.node'
+Require stack:
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\lightningcss\node\index.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\@tailwindcss\node\dist\index.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\@tailwindcss\postcss\dist\index.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\build\webpack\config\blocks\css\index.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\build\webpack\config\index.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\build\webpack-config.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\server\dev\hot-reloader-webpack.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\server\lib\router-server.js
+- C:\Users\hedra\Desktop\Sourcecode\NexusV2\Nexus-Frontend\node_modules\next\dist\server\lib\start-server.js
+Import trace for requested module:
+./app/globals.css.webpack[javascript/auto]!=!./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[3]!./app/globals.css
+./app/globals.css

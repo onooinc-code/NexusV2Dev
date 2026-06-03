@@ -8,4 +8,15 @@
    - Environments: .env.local
 
  ✓ Starting...
- ✓ Ready in 6.2s
+ ✓ Ready in 2.1s
+ ✓ Compiled /middleware in 384ms (158 modules)
+ ○ Compiling / ...
+ GET / 500 in 30755ms
+ GET / 500 in 693ms
+ GET / 500 in 86ms
+ GET / 500 in 202ms
+ GET / 500 in 240ms
+ GET / 500 in 211ms
+ GET / 500 in 740ms
+ GET / 500 in 605ms
+ GET / 500 in 3342ms

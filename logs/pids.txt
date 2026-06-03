@@ -7,3 +7,8 @@ API : 28544
 Vite : 21020
 Queue : 5900
 Next.js : 29644
+Reverb : 35836
+API : 29020
+Vite : 8396
+Queue : 15260
+Next.js : 3140
