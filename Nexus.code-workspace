@@ -9,6 +9,9 @@
     {
       "path": "NexusV2_Docs",
     },
+    {
+      "path": ".",
+    },
   ],
   "settings": {
     "powershell.cwd": "NexusV2_Docs",
