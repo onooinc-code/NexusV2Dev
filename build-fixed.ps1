@@ -112,7 +112,10 @@ try {
     
     # Install PHP dependencies with Composer (Improvement #2: With proper error handling)
     Log-Message "Installing PHP dependencies (Composer)..." "INFO"
+    $prevEAP = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
     $composerOutput = & composer install --ignore-platform-req=ext-pcntl --ignore-platform-req=ext-redis --ignore-platform-req=ext-posix --no-dev --no-scripts 2>&1
+    $ErrorActionPreference = $prevEAP
     $composerOutput | Tee-Object -FilePath $backendLogFile -Append | Out-Null
     if ($LASTEXITCODE -ne 0) {
         Log-Message "Composer warning (continuing): Exit code $LASTEXITCODE" "WARNING"
@@ -123,7 +126,10 @@ try {
     
     # Install Node dependencies (Improvement #3: Using npm ci for reproducible builds)
     Log-Message "Installing Node dependencies..." "INFO"
+    $prevEAP = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
     $npmOutput = & npm install --no-optional 2>&1
+    $ErrorActionPreference = $prevEAP
     $npmOutput | Tee-Object -FilePath $backendLogFile -Append | Out-Null
     if ($LASTEXITCODE -ne 0) {
         Log-Message "npm warning (continuing): Exit code $LASTEXITCODE" "WARNING"
@@ -134,7 +140,11 @@ try {
     
     # Improvement #4: Generate application key
     Log-Message "Generating application key..." "INFO"
-    php artisan key:generate --force 2>&1 | Tee-Object -FilePath $backendLogFile -Append | Out-Null
+    $prevEAP = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    $phpKeyOutput = php artisan key:generate --force 2>&1
+    $ErrorActionPreference = $prevEAP
+    $phpKeyOutput | Tee-Object -FilePath $backendLogFile -Append | Out-Null
     if ($LASTEXITCODE -ne 0) {
         Log-Message "Application key generation skipped or already set" "WARNING"
     }
@@ -162,7 +172,10 @@ try {
     
     # Improvement #6: Optimize for production
     Log-Message "Optimizing autoloader..." "INFO"
+    $prevEAP = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
     composer dump-autoload --optimize 2>$null | Out-Null
+    $ErrorActionPreference = $prevEAP
     Log-Message "Autoloader optimization complete" "SUCCESS"
     
     Log-Message "Backend setup completed successfully" "SUCCESS"
@@ -197,7 +210,10 @@ try {
     
     # Install dependencies
     Log-Message "Installing frontend dependencies..." "INFO"
+    $prevEAP = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
     $npmInstallOutput = & npm install --no-optional 2>&1
+    $ErrorActionPreference = $prevEAP
     $npmInstallOutput | Tee-Object -FilePath $frontendLogFile -Append | Out-Null
     if ($LASTEXITCODE -ne 0) {
         Log-Message "npm install warning (continuing): Exit code $LASTEXITCODE" "WARNING"
@@ -208,7 +224,10 @@ try {
     
     # Build frontend (Improvement #13: With source maps for debugging)
     Log-Message "Running frontend build..." "INFO"
+    $prevEAP = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
     $npmBuildOutput = & npm run build 2>&1
+    $ErrorActionPreference = $prevEAP
     $npmBuildOutput | Tee-Object -FilePath $frontendLogFile -Append | Out-Null
     if ($LASTEXITCODE -ne 0) {
         Log-Message "Frontend build warning (continuing): Exit code $LASTEXITCODE" "WARNING"
@@ -253,8 +272,11 @@ try {
     
     # Improvement #16: Cache clear for fresh start
     Log-Message "Clearing runtime caches for fresh start..." "INFO"
+    $prevEAP = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
     php artisan cache:clear 2>$null | Out-Null
     php artisan route:clear 2>$null | Out-Null
+    $ErrorActionPreference = $prevEAP
     Log-Message "Runtime caches cleared" "SUCCESS"
     
     Write-Host ""
@@ -278,7 +300,7 @@ try {
     
     # Start Vite Dev Server
     Log-Message "Starting Vite Dev Server (port $VitePort)..." "INFO"
-    $viteProcess = Start-Process -FilePath "npm" -ArgumentList "run", "dev", "--", "--port", "$VitePort" `
+    $viteProcess = Start-Process -FilePath "npm.cmd" -ArgumentList "run", "dev", "--", "--port", "$VitePort" `
         -PassThru -NoNewWindow -WorkingDirectory $backendPath -RedirectStandardOutput (Join-Path $logsPath "vite.log") -RedirectStandardError (Join-Path $logsPath "vite-error.log")
     Save-ProcessId $viteProcess.Id "Vite"
     Log-Message "Vite Dev Server started with PID $($viteProcess.Id)" "SUCCESS"
@@ -295,7 +317,7 @@ try {
     # Start Next.js Frontend
     Log-Message "Starting Next.js Frontend (port $NextPort)..." "INFO"
     Push-Location $frontendPath
-    $nextProcess = Start-Process -FilePath "npm" -ArgumentList "run", "dev", "--", "--port", "$NextPort" `
+    $nextProcess = Start-Process -FilePath "npm.cmd" -ArgumentList "run", "dev", "--", "--port", "$NextPort" `
         -PassThru -NoNewWindow -RedirectStandardOutput (Join-Path $logsPath "nextjs.log") -RedirectStandardError (Join-Path $logsPath "nextjs-error.log")
     Save-ProcessId $nextProcess.Id "Next.js"
     Log-Message "Next.js Frontend started with PID $($nextProcess.Id)" "SUCCESS"

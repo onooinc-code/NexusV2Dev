@@ -7,10 +7,10 @@
       "path": "Nexus-backend",
     },
     {
-      "path": "NexusDev",
-    },
-    {
-      "path": ".",
+      "path": "NexusV2_Docs",
     },
   ],
+  "settings": {
+    "powershell.cwd": "NexusV2_Docs",
+  },
 }

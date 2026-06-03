@@ -2,3 +2,5 @@
 .kilocode/
 node_modules/
 .env
+.ignore
+.vscode
