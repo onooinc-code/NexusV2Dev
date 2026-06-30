@@ -1,0 +1,326 @@
+# Nexus v2 — Backend README
+
+**Laravel 11 API Backend**
+
+---
+
+## 📦 Tech Stack
+
+| Technology      | Version  | Purpose            |
+| --------------- | -------- | ------------------ |
+| PHP             | 8.2+     | Language           |
+| Laravel         | 11.31    | Framework          |
+| Laravel Sanctum | 4.3      | API authentication |
+| Laravel Reverb  | 1.10     | WebSocket server   |
+| Laravel Horizon | 5.46     | Queue monitoring   |
+| MySQL/SQLite    | 8.0+ / 3 | Database           |
+| Redis (Predis)  | 7+ / 2.3 | Cache, queues      |
+
+---
+
+## 🚀 Setup
+
+```bash
+cd Nexus-backend
+
+# 1. Install dependencies
+composer install
+
+# 2. Configure environment
+cp .env.example .env
+php artisan key:generate
+
+# 3. Set up database
+# Edit .env: DB_CONNECTION, DB_HOST, DB_DATABASE, etc.
+php artisan migrate
+php artisan db:seed   # Optional: seed test data
+
+# 4. Start development server
+php artisan serve     # → http://localhost:8000
+```
+
+---
+
+## 🔴 Redis & Queue System
+
+### Setup Redis
+
+```bash
+# Using Docker (recommended)
+docker run -d -p 6379:6379 --name redis-nexus redis:latest
+
+# Verify connection
+docker exec redis-nexus redis-cli ping
+# Should return: PONG
+```
+
+### .env Configuration
+
+```ini
+CACHE_STORE=redis
+SESSION_DRIVER=redis
+QUEUE_CONNECTION=redis
+REDIS_HOST=127.0.0.1
+REDIS_PORT=6379
+REDIS_PASSWORD=null
+```
+
+### Running Queue Worker
+
+```bash
+# Start queue worker (processes jobs from Redis)
+php artisan queue:work --tries=3 --timeout=90
+
+# With specific queues
+php artisan queue:work redis --queue=llm-inference,messages,memory,default
+
+# Monitor queue
+php artisan queue:monitor
+```
+
+### Creating Background Jobs
+
+```bash
+# Generate new job
+php artisan make:job SendEmailJob
+
+# Example job (app/Jobs/SendEmailJob.php):
+namespace App\Jobs;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+
+class SendEmailJob implements ShouldQueue {
+    use Queueable;
+
+    public function handle() {
+        // This runs in the background
+        Mail::to($this->user->email)->send(new UserWelcome());
+    }
+}
+
+# Dispatch job
+SendEmailJob::dispatch($user);
+```
+
+### Useful Queue Commands
+
+```bash
+# List failed jobs
+php artisan queue:failed
+
+# Retry failed job
+php artisan queue:retry {id}
+
+# Clear failed jobs
+php artisan queue:flush
+
+# Monitor in real-time
+php artisan queue:monitor
+
+# Open Horizon dashboard
+php artisan horizon
+# → http://localhost:8000/horizon
+```
+
+---
+
+## ⚡ Running Services
+
+```bash
+# API Server (port 8000)
+php artisan serve
+
+# Queue Worker
+php artisan queue:listen
+# OR with specific queues:
+php artisan queue:listen --queue=llm-inference,messages,memory,default
+
+# WebSocket Server (port 6001)
+php artisan reverb:start
+
+# Scheduler (runs cron jobs)
+php artisan schedule:work
+
+# Queue Monitor (Horizon Dashboard → /horizon)
+php artisan horizon
+```
+
+---
+
+## 📁 Directory Structure
+
+```
+Nexus-backend/
+├── app/
+│   ├── Agents/          # AI agent implementations (Autonomous, Reflection, etc.)
+│   ├── Console/         # Artisan commands
+│   ├── Events/          # Domain events
+│   ├── Exceptions/      # Exception handlers
+│   ├── Http/
+│   │   ├── Controllers/ # API request handlers
+│   │   ├── Middleware/  # Auth, CORS, rate limiting
+│   │   ├── Requests/    # Form request validators
+│   │   └── Resources/  # API response transformers
+│   ├── Hubs/            # Hub-level orchestration
+│   ├── Integrations/    # External service adapters (Mem0)
+│   ├── Jobs/            # Background queue jobs
+│   ├── Listeners/       # Event listeners
+│   ├── Models/          # Eloquent models (80+ models)
+│   ├── Policies/        # Authorization policies
+│   ├── Providers/       # Service providers
+│   ├── Repositories/    # Data access layer
+│   └── Services/        # Business logic (47+ services)
+│       ├── AI/          # LLM provider implementations
+│       ├── AiModelsHub/ # AI gateway, routing, key management
+│       ├── Contact/     # Contact-specific services
+│       ├── Engines/     # Processing engines
+│       ├── HedraSoul/   # HedraSoul AI assistant services
+│       ├── Memory/      # 5-type memory system
+│       ├── PeopleConnect/ # WhatsApp messaging services
+│       ├── Pipelines/   # Processing pipelines
+│       ├── Proactive/   # Proactive AI services
+│       ├── Routing/     # Message/task routing
+│       └── Workflows/   # Workflow execution
+├── config/              # Laravel configuration files
+├── database/
+│   ├── migrations/      # 68 database migrations
+│   ├── factories/       # Test data factories
+│   └── seeders/         # Database seeders
+├── routes/
+│   ├── api.php          # All API routes (52KB)
+│   ├── channels.php     # WebSocket channel auth
+│   └── web.php          # Web routes (health check)
+└── tests/               # PHPUnit tests
+```
+
+---
+
+## 🔑 Key Environment Variables
+
+```env
+# Application
+APP_NAME=Nexus
+APP_ENV=local               # local | production
+APP_KEY=base64:...         # Generated by key:generate
+APP_URL=http://localhost:8000
+
+# Database
+DB_CONNECTION=sqlite        # sqlite (dev) | mysql (production)
+DB_DATABASE=/path/to/db     # or DB_HOST/PORT/USERNAME/PASSWORD for mysql
+
+# Queue & Cache
+QUEUE_CONNECTION=database   # database | redis
+CACHE_STORE=database        # database | redis
+
+# WebSocket
+REVERB_HOST=127.0.0.1
+REVERB_PORT=6001
+REVERB_SCHEME=http          # https in production
+
+# AI (add your keys)
+# No default keys — configure via SettingsHub or .env
+
+# WAHA (WhatsApp)
+WAHA_BASE_URL=http://localhost:3000
+WAHA_SESSION=default
+```
+
+---
+
+## 🗄️ Database
+
+```bash
+# Run migrations
+php artisan migrate
+
+# Rollback last batch
+php artisan migrate:rollback
+
+# Fresh migrate (DESTROYS DATA)
+php artisan migrate:fresh --seed
+
+# Show migration status
+php artisan migrate:status
+```
+
+**Total migrations:** 68 (from 2026-05-17 to 2026-06-11)
+
+---
+
+## 🧪 Testing
+
+```bash
+# Run all tests
+php artisan test
+
+# Run specific test suite
+php artisan test --testsuite=Feature
+php artisan test --testsuite=Unit
+
+# With coverage report
+php artisan test --coverage
+
+# Test database uses SQLite (in-memory, defined in phpunit.xml)
+```
+
+---
+
+## 🔐 Authentication
+
+All API endpoints (except `/api/auth/login` and `/api/auth/register`) require:
+
+```http
+Authorization: Bearer {sanctum_token}
+```
+
+Obtain token via:
+
+```bash
+POST /api/auth/login
+{ "email": "user@example.com", "password": "password" }
+→ { "token": "...", "user": {...} }
+```
+
+---
+
+## 📡 API Reference
+
+Full route list: `route_list.txt` (auto-generated, 34KB, 300+ routes)
+
+Generate fresh list:
+
+```bash
+php artisan route:list --json > route_list.txt
+```
+
+---
+
+## 📊 Horizon (Queue Dashboard)
+
+```bash
+# Start Horizon
+php artisan horizon
+
+# Access dashboard
+http://localhost:8000/horizon
+```
+
+---
+
+## ⚙️ Key Artisan Commands
+
+| Command                      | Purpose                |
+| ---------------------------- | ---------------------- |
+| `php artisan serve`          | Start API server       |
+| `php artisan queue:listen`   | Process queued jobs    |
+| `php artisan reverb:start`   | Start WebSocket server |
+| `php artisan schedule:work`  | Run scheduler          |
+| `php artisan horizon`        | Queue monitor          |
+| `php artisan scheduler:work` | Nexus custom scheduler |
+| `php artisan tinker`         | Interactive REPL       |
+| `php artisan migrate`        | Run migrations         |
+| `php artisan test`           | Run tests              |
+
+---
+
+_Nexus v2 Backend · 2026-06-14_

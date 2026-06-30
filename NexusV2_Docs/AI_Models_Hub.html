@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus V2 - AI Model Hub Blueprint</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #0b0f19;
+            --bg-surface: rgba(17, 24, 39, 0.7);
+            --bg-surface-hover: rgba(31, 41, 55, 0.8);
+            --primary: #3b82f6;
+            --primary-glow: rgba(59, 130, 246, 0.15);
+            --secondary: #10b981;
+            --accent: #8b5cf6;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(59, 130, 246, 0.4);
+            --glass-blur: blur(12px);
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 40%);
+            background-attachment: fixed;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header section with glassmorphism */
+        header {
+            position: relative;
+            padding: 3rem 2rem;
+            margin-bottom: 3rem;
+            border-radius: 24px;
+            background: var(--bg-surface);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            text-align: center;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent), var(--secondary));
+        }
+
+        header h1 {
+            font-size: 3rem;
+            background: linear-gradient(135deg, #fff 30%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        /* Tabs Navigation styling */
+        .tabs-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            padding: 0.5rem;
+            border-radius: 16px;
+            background: rgba(17, 24, 39, 0.4);
+            border: 1px solid var(--border-color);
+            backdrop-filter: var(--glass-blur);
+        }
+
+        .tab-btn {
+            font-family: 'Outfit', sans-serif;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .tab-btn:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .tab-btn.active {
+            color: #fff;
+            background: var(--primary);
+            box-shadow: 0 4px 20px var(--primary-glow);
+        }
+
+        /* Tab Content panels */
+        .tab-panel {
+            display: none;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Grid Layouts for cards */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 2rem;
+        }
+
+        /* Premium glassmorphic cards */
+        .card {
+            background: var(--bg-surface);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2.25rem;
+            transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(800px circle at var(--x, 0px) var(--y, 0px), rgba(255,255,255,0.06), transparent 40%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--border-hover);
+            box-shadow: 0 10px 30px var(--primary-glow);
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .card ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .card ul li {
+            position: relative;
+            padding-left: 1.75rem;
+            color: var(--text-main);
+            font-size: 0.9rem;
+        }
+
+        .card ul li::before {
+            content: "✦";
+            position: absolute;
+            left: 0;
+            color: var(--secondary);
+            font-weight: bold;
+        }
+
+        /* Custom alerts styling */
+        .alert {
+            padding: 1.25rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid;
+            font-size: 0.95rem;
+        }
+
+        .alert-info {
+            background: rgba(59, 130, 246, 0.1);
+            border-left-color: var(--primary);
+            color: #93c5fd;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border-left-color: var(--secondary);
+            color: #6ee7b7;
+        }
+
+        /* Mermaid diagram wrapper */
+        .diagram-container {
+            background: rgba(17, 24, 39, 0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            backdrop-filter: var(--glass-blur);
+        }
+
+        .diagram-title {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Tech file tree list styling */
+        .file-tree {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .file-tree li {
+            position: relative;
+            padding: 0.5rem 0 0.5rem 1.5rem;
+            border-left: 1px dashed rgba(255, 255, 255, 0.15);
+        }
+
+        .file-tree li::before {
+            content: "";
+            position: absolute;
+            top: 1.25rem;
+            left: 0;
+            width: 1rem;
+            height: 1px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.15);
+        }
+
+        .file-tree .file-name {
+            font-family: monospace;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .file-tree .file-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-left: 0.5rem;
+        }
+
+        /* Tooltip style */
+        .badge {
+            background: rgba(139, 92, 246, 0.2);
+            color: #c084fc;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        /* Code snippets style */
+        pre {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.25rem;
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            color: #67e8f9;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 5rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            padding: 2rem 0;
+            border-top: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI Model Hub</h1>
+            <p>Unified AI Multi-Provider Integration, Intent-Based Routing, and Circuit-Breaker Resilience System</p>
+        </header>
+
+        <nav class="tabs-nav">
+            <button class="tab-btn active" onclick="switchTab('business')">Business Perspective</button>
+            <button class="tab-btn" onclick="switchTab('logic')">Logic Architecture</button>
+            <button class="tab-btn" onclick="switchTab('technical')">Technical Workflow</button>
+            <button class="tab-btn" onclick="switchTab('diagrams')">Diagrams & Schemas</button>
+        </nav>
+
+        <!-- Business Tab -->
+        <main id="business" class="tab-panel active">
+            <div class="grid-3">
+                <div class="card">
+                    <div class="card-icon">⚡</div>
+                    <h3>Multi-Provider Hub</h3>
+                    <p>Enables Nexus V2 to scale seamlessly without coupling to a single AI vendor. Business managers can register and sync models from industry leaders or custom internal endpoints.</p>
+                    <ul>
+                        <li>Decouples codebase from specific API vendor formats (OpenAI, Google, Anthropic, Groq).</li>
+                        <li>Supports custom REST API wrapping for proprietary LLM deployments.</li>
+                        <li>Simplifies new provider onboarding via dynamic forms.</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🔑</div>
+                    <h3>Secure API Key Rotator</h3>
+                    <p>Ensures zero-downtime and secure token usage by abstracting and encrypting sensitive credentials, shifting them away from direct database tables.</p>
+                    <ul>
+                        <li>Automated encryption/decryption at database boundary using AES-256-GCM.</li>
+                        <li>Dynamic, real-time key switching depending on current executing provider.</li>
+                        <li>Support for multiple key-header injection formats (Bearer, Key, custom).</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">📊</div>
+                    <h3>Financial Control & Budgeting</h3>
+                    <p>Protects the organization from runaway API expenses by placing guardrails at both global and workspace scopes.</p>
+                    <ul>
+                        <li>Monthly limits set individually per Workspace or globally.</li>
+                        <li>Real-time predictive forecasting engine warns when projected spend exceeds limits.</li>
+                        <li>Automatic request blocking when hard budget caps are violated.</li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+
+        <!-- Logic Tab -->
+        <main id="logic" class="tab-panel">
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-icon">⚙️</div>
+                    <h3>Intent Routing Engine</h3>
+                    <p>Abstracts model details away from developers. Instead of invoking "gpt-4" or "gemini-1.5", developers call semantic intents (e.g., <code>reasoning</code>, <code>general_chat</code>, <code>summarization</code>).</p>
+                    <div class="alert alert-info">
+                        The routing engine maps intent keys to the highest performing model configuration, automatically evaluating cost, latency, security class, and language criteria.
+                    </div>
+                    <ul>
+                        <li><strong>Profile Matching:</strong> Low-cost, fast-latency, high-security, or custom profile constraints.</li>
+                        <li><strong>Context Isolation:</strong> Transparent system-prompt injecting per route.</li>
+                        <li><strong>Fallback Chains:</strong> Intent configurations specify fallback providers to try if the primary fails.</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🛡️</div>
+                    <h3>Circuit Breaker Pattern</h3>
+                    <p>Prevents cascading backend failures during API provider outages. Tracks health status dynamically and fails fast if the provider is down.</p>
+                    <ul>
+                        <li><strong>Closed State:</strong> Requests pass through normally. Failures increment a threshold tally.</li>
+                        <li><strong>Open State:</strong> Tally exceeded. Request fails fast, triggering immediate fallback routing.</li>
+                        <li><strong>Half-Open State:</strong> Tries a trial request after decay timeout. Restores Closed state on success, or re-opens on failure.</li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+
+        <!-- Technical Tab -->
+        <main id="technical" class="tab-panel">
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Codebase Directory Layout</h3>
+                    <ul class="file-tree">
+                        <li>
+                            <span class="file-name">app/Services/AiModelsHub/</span>
+                            <ul class="file-tree">
+                                <li>
+                                    <span class="file-name">IntentRoutingEngine.php</span>
+                                    <span class="file-desc">Resolves profile constraints & maps intents to providers/models.</span>
+                                </li>
+                                <li>
+                                    <span class="file-name">CircuitBreaker.php</span>
+                                    <span class="file-desc">Protects system from API outages; executes fallback cascades.</span>
+                                </li>
+                                <li>
+                                    <span class="file-name">PayloadAdapterFactory.php</span>
+                                    <span class="file-desc">Adapts JSON inputs/outputs between generic formats and provider-specific schemas.</span>
+                                </li>
+                                <li>
+                                    <span class="file-name">EncryptedApiKeyStorage.php</span>
+                                    <span class="file-desc">Manages AES-256 key storage & database encryption boundaries.</span>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <span class="file-name">app/Http/Controllers/</span>
+                            <ul class="file-tree">
+                                <li>
+                                    <span class="file-name">AiRequestController.php</span>
+                                    <span class="file-desc">Unified POST `/api/v1/ai/request` endpoint handler.</span>
+                                </li>
+                                <li>
+                                    <span class="file-name">AiCostAnalyticsController.php</span>
+                                    <span class="file-desc">Handles budget setting and forecasting calculations.</span>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>Adaptive Payload Normalization</h3>
+                    <p>The <code>PayloadAdapterFactory</code> transforms standard payloads into API-specific shapes dynamically:</p>
+                    <pre><code>// Generic Input format
+{
+  "intent": "general_chat",
+  "prompt": "Hello World",
+  "parameters": { "temperature": 0.7 }
+}
+
+// Adapted OpenAI Output:
+{
+  "model": "gpt-4",
+  "messages": [{"role": "user", "content": "Hello World"}],
+  "temperature": 0.7
+}
+
+// Adapted Google Gemini Output:
+{
+  "model": "gemini-1.5-pro",
+  "contents": [{"parts": [{"text": "Hello World"}]}],
+  "generationConfig": {"temperature": 0.7}
+}</code></pre>
+                </div>
+            </div>
+        </main>
+
+        <!-- Diagrams Tab -->
+        <main id="diagrams" class="tab-panel">
+            <div class="diagram-container">
+                <div class="diagram-title">
+                    <span class="badge">Workflow</span> Request Lifecycle & Circuit Breaker Logic
+                </div>
+                <!-- Mermaid diagram rendered dynamically -->
+                <pre class="mermaid" style="background: transparent; border: none;">
+graph TD
+    A[Client API Request] --> B{Check Semantic Cache}
+    B -- Hit --> C[Return Cached Response]
+    B -- Miss --> D[Intent Routing Engine]
+    D --> E[Resolve Primary Provider & Model]
+    E --> F{Is Circuit Breaker Open?}
+    F -- Yes --> G[Trigger Fallback Cascade]
+    F -- No --> H[Decrypt API Key]
+    H --> I[Adapt Payload to Provider Format]
+    I --> J[Execute HTTP Post Request]
+    J -- Success --> K[Record Success]
+    J -- Failure --> L[Record Failure & Trigger Circuit Breaker]
+    L --> G
+    K --> M[Adapt Response to Generic Format]
+    M --> N[Track Cost & Usage]
+    N --> O[Store in Semantic Cache]
+    O --> P[Return Response to Client]
+    G --> Q[Resolve Fallback Provider]
+    Q --> H
+                </pre>
+            </div>
+
+            <div class="diagram-container">
+                <div class="diagram-title">
+                    <span class="badge">State Machine</span> Circuit Breaker States
+                </div>
+                <pre class="mermaid" style="background: transparent; border: none;">
+stateDiagram-v2
+    [*] --> Closed : Start
+    Closed --> Open : Failures >= Threshold
+    Open --> HalfOpen : Decay Timeout Expired (Cooldown)
+    HalfOpen --> Closed : Test Request Succeeds (Reset)
+    HalfOpen --> Open : Test Request Fails (Re-open)
+                </pre>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 Nexus V2 Enterprise Portal. Built with Laravel 11, React Next.js, and Vitest.</p>
+        </footer>
+    </div>
+
+    <!-- Load Mermaid.js for interactive diagrams -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'dark',
+            securityLevel: 'loose',
+            themeVariables: {
+                background: '#111827',
+                primaryColor: '#3b82f6',
+                primaryTextColor: '#f3f4f6',
+                lineColor: '#3b82f6',
+                secondaryColor: '#10b981',
+                tertiaryColor: '#1f2937'
+            }
+        });
+    </script>
+    <script>
+        function switchTab(tabId) {
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            // Hide all tab panels
+            document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+            
+            // Add active class to selected button
+            const selectedBtn = Array.from(document.querySelectorAll('.tab-btn')).find(btn => 
+                btn.getAttribute('onclick').includes(tabId)
+            );
+            if (selectedBtn) selectedBtn.classList.add('active');
+            
+            // Show selected panel
+            const panel = document.getElementById(tabId);
+            if (panel) panel.classList.add('active');
+        }
+
+        // Add visual micro-glow interaction on cards (mouse move effect)
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--x', `${x}px`);
+                card.style.setProperty('--y', `${y}px`);
+            });
+        });
+    </script>
+</body>
+</html>

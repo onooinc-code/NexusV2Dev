@@ -36,13 +36,7 @@ Establish architecture standards and design patterns for Nexus to ensure a scala
 - Use an outbox pattern for external side effects
 - Track event delivery and retries in LogsHub
 
-## 6. State Management
-- Keep state as close to its owner hub as possible
-- Use Redis for ephemeral or working state
-- Use MySQL for durable structured state
-- Use vector stores for semantic and embedding data
-
-## 7. Error and Resilience Patterns
+## 6. Error and Resilience Patterns
 - Use circuit breakers for external provider calls
 - Implement retry policies with exponential backoff
 - Fail fast for invalid requests; fail safe for external outages

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WahaManager Documentation - NexusV2</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --accent: #3b82f6;
+            --border-color: #e2e8f0;
+            --code-bg: #f1f5f9;
+            --code-text: #0f172a;
+        }
+
+        .dark-mode {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent: #60a5fa;
+            --border-color: #334155;
+            --code-bg: #000000;
+            --code-text: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .en-term {
+            font-family: 'Fira Code', monospace;
+            direction: ltr;
+            display: inline-block;
+            background-color: var(--code-bg);
+            color: var(--code-text);
+            padding: 0.1rem 0.4rem;
+            border-radius: 0.25rem;
+            font-size: 0.85em;
+            margin: 0 0.2rem;
+            vertical-align: middle;
+        }
+
+        /* Sidebar & TOC */
+        .sidebar {
+            position: sticky;
+            top: 2rem;
+            max-height: calc(100vh - 4rem);
+            overflow-y: auto;
+        }
+
+        .toc-link {
+            transition: all 0.2s;
+            border-right: 2px solid transparent;
+        }
+        
+        .toc-link:hover, .toc-link.active {
+            color: var(--accent);
+            border-right-color: var(--accent);
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+
+        /* Accordion */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .accordion-active .accordion-content {
+            max-height: 1000px;
+        }
+        .accordion-active .ph-caret-down {
+            transform: rotate(180deg);
+        }
+
+        /* Workflow Steps */
+        .step-container {
+            position: relative;
+            padding-right: 2rem;
+            border-right: 2px dashed var(--border-color);
+            margin-bottom: 2rem;
+        }
+        .step-circle {
+            position: absolute;
+            right: -1.1rem;
+            top: 0;
+            width: 2rem;
+            height: 2rem;
+            background-color: var(--bg-secondary);
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--accent);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 backdrop-blur-md bg-opacity-80 border-b" style="background-color: var(--bg-secondary); border-color: var(--border-color);">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-3">
+                    <i class="ph-fill ph-whatsapp-logo text-green-500 text-3xl"></i>
+                    <h1 class="font-bold text-xl tracking-tight">توثيق <span class="en-term">WahaManager</span></h1>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <i class="ph ph-magnifying-glass absolute right-3 top-2.5 text-gray-400"></i>
+                        <input type="text" id="searchInput" placeholder="ابحث في التوثيق..." class="w-64 pr-10 pl-4 py-2 rounded-lg text-sm border focus:outline-none focus:ring-2" style="background-color: var(--bg-primary); border-color: var(--border-color); color: var(--text-primary);">
+                    </div>
+                    <button id="themeToggle" class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <i class="ph ph-moon text-xl" id="themeIcon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex gap-8">
+        
+        <!-- Sidebar (TOC) -->
+        <aside class="hidden lg:block w-1/4">
+            <div class="sidebar card p-4">
+                <h3 class="font-bold text-lg mb-4 border-b pb-2" style="border-color: var(--border-color);">المحتويات</h3>
+                <ul class="space-y-1 text-sm font-semibold" style="color: var(--text-secondary);" id="toc">
+                    <li><a href="#intro" class="toc-link block py-2 pr-3 rounded">مقدمة عن النظام</a></li>
+                    <li><a href="#frontend" class="toc-link block py-2 pr-3 rounded">هيكلية الـ <span class="en-term">Frontend</span></a></li>
+                    <li><a href="#backend" class="toc-link block py-2 pr-3 rounded">هيكلية الـ <span class="en-term">Backend</span></a></li>
+                    <li><a href="#workflows" class="toc-link block py-2 pr-3 rounded">دورات العمل (<span class="en-term">Workflows</span>)</a></li>
+                    <li><a href="#database" class="toc-link block py-2 pr-3 rounded">تأثيرات قاعدة البيانات (<span class="en-term">Database</span>)</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Documentation Content -->
+        <main class="w-full lg:w-3/4 space-y-8 searchable-content">
+            
+            <!-- Section: Intro -->
+            <section id="intro" class="card p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="p-3 bg-blue-500 bg-opacity-10 text-blue-500 rounded-xl">
+                        <i class="ph ph-info text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold">مقدمة عن النظام</h2>
+                </div>
+                <p class="leading-relaxed mb-4 text-lg">
+                    نظام <span class="en-term">WahaManager</span> هو نظام الإدارة والربط الوسيط بين <span class="en-term">NexusV2</span> وبين واجهة برمجة تطبيقات واتساب (<span class="en-term">WhatsApp API</span>) المعروفة باسم <span class="en-term">WAHA</span>.
+                </p>
+                <p class="leading-relaxed text-lg">
+                    يُعنى هذا النظام باستقبال الرسائل (عن طريق <span class="en-term">Webhooks</span>)، مزامنة جهات الاتصال (<span class="en-term">Contacts Sync</span>)، وسحب الرسائل التاريخية (<span class="en-term">Messages Sync</span>)، بالإضافة إلى أتمتة إرسال هذه البيانات إلى نماذج الذكاء الاصطناعي (<span class="en-term">AI Analysis</span>) لاستخراج سمات الشخصية، الاهتمامات، والموضوعات.
+                </p>
+            </section>
+
+            <!-- Section: Frontend -->
+            <section id="frontend" class="card p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="p-3 bg-purple-500 bg-opacity-10 text-purple-500 rounded-xl">
+                        <i class="ph ph-desktop text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold">هيكلية الـ <span class="en-term">Frontend</span> (واجهة المستخدم)</h2>
+                </div>
+                
+                <p class="leading-relaxed mb-6">
+                    تم بناء الواجهة باستخدام <span class="en-term">React / Next.js</span> في مسار <span class="en-term">app/contacts/waha-manage/page.tsx</span>. تعمل هذه الواجهة كلوحة تحكم (<span class="en-term">Orchestration Dashboard</span>) للتحكم الكامل بجميع العمليات.
+                </p>
+
+                <!-- Accordion Item 1 -->
+                <div class="accordion border-b mb-4" style="border-color: var(--border-color);">
+                    <button class="accordion-header w-full flex justify-between items-center py-4 text-right font-bold text-lg hover:text-blue-500 transition-colors">
+                        <span><i class="ph ph-chart-bar ml-2 text-xl align-middle text-gray-400"></i> إحصائيات النظام (<span class="en-term">Dashboard Stats</span>)</span>
+                        <i class="ph ph-caret-down transition-transform duration-300"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="pb-6 pt-2 leading-relaxed text-sm">
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong><span class="en-term">Synced Contacts</span>:</strong> يعرض العدد الإجمالي لجهات الاتصال التي تم استيرادها.</li>
+                                <li><strong><span class="en-term">Ingested Messages</span>:</strong> عدد الرسائل التي تم سحبها من واتساب إلى النظام.</li>
+                                <li><strong><span class="en-term">Active AI Jobs</span>:</strong> عدد العمليات التي تعمل حالياً في الخلفية لتحليل الرسائل باستخدام الذكاء الاصطناعي.</li>
+                            </ul>
+                            <p class="mt-3"><strong>الـ <span class="en-term">Logic</span>:</strong> يتم جلب هذه البيانات عبر استدعاء <span class="en-term">Polling</span> كل 5 ثواني لـ <span class="en-term">API Endpoint</span>: <code>/settings/waha-manage/status</code> لضمان تحديث الأرقام فورياً بدون إعادة تحميل الصفحة.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Accordion Item 2 -->
+                <div class="accordion border-b mb-4" style="border-color: var(--border-color);">
+                    <button class="accordion-header w-full flex justify-between items-center py-4 text-right font-bold text-lg hover:text-blue-500 transition-colors">
+                        <span><i class="ph ph-arrows-clockwise ml-2 text-xl align-middle text-gray-400"></i> إدارة عمليات المزامنة (<span class="en-term">Active Sync Processes</span>)</span>
+                        <i class="ph ph-caret-down transition-transform duration-300"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="pb-6 pt-2 leading-relaxed text-sm">
+                            <p class="mb-3">واجهة تعرض العمليات قيد التشغيل (مثل مزامنة الرسائل أو جهات الاتصال). تحتوي على:</p>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong><span class="en-term">Progress Bar</span>:</strong> شريط تقدم يوضح نسبة إنجاز كل عملية (<span class="en-term">processed_items / total_items</span>).</li>
+                                <li><strong><span class="en-term">Pause / Resume</span>:</strong> إمكانية إيقاف العملية مؤقتاً أو استئنافها عن طريق مناداة <span class="en-term">API</span> خاص بها.</li>
+                                <li><strong>أزرار البدء:</strong> يمكن للمستخدم تشغيل <span class="en-term">Sync Contacts</span> أو <span class="en-term">Sync Messages</span> أو <span class="en-term">Batch Analyze AI</span> لجميع الجهات.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Accordion Item 3 -->
+                <div class="accordion mb-4">
+                    <button class="accordion-header w-full flex justify-between items-center py-4 text-right font-bold text-lg hover:text-blue-500 transition-colors">
+                        <span><i class="ph ph-brain ml-2 text-xl align-middle text-gray-400"></i> نافذة تحليل الذكاء الاصطناعي (<span class="en-term">AI Analysis Modal</span>)</span>
+                        <i class="ph ph-caret-down transition-transform duration-300"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="pb-6 pt-2 leading-relaxed text-sm">
+                            <p class="mb-3">نافذة تنبثق لطلب تحليل شامل للمحادثات، تتيح للمستخدم إدخال التالي:</p>
+                            <ul class="list-disc list-inside space-y-2 mb-3">
+                                <li><strong><span class="en-term">Agent (Strategy ID)</span>:</strong> تحديد الوكيل أو الاستراتيجية المراد تطبيقها.</li>
+                                <li><strong><span class="en-term">Model Override</span>:</strong> تغيير الموديل الافتراضي (مثل <span class="en-term">gpt-4o</span>).</li>
+                                <li><strong><span class="en-term">Message Limit</span>:</strong> تحديد عدد الرسائل المرجعية لتقليل استهلاك الـ <span class="en-term">Tokens</span>.</li>
+                                <li><strong><span class="en-term">Extraction Targets</span>:</strong> تحديد ما نريد استخراجه (سمات شخصية <span class="en-term">Personality</span>، تفضيلات <span class="en-term">Preferences</span>، مواضيع <span class="en-term">Topics</span>).</li>
+                            </ul>
+                            <div class="p-3 bg-orange-100 text-orange-800 rounded border border-orange-200 dark:bg-orange-900 dark:bg-opacity-20 dark:text-orange-200 dark:border-orange-800">
+                                <i class="ph-fill ph-warning-circle align-middle"></i> <strong><span class="en-term">Business Logic</span>:</strong> يرسل هذا الـ <span class="en-term">Form</span> البيانات إلى <code>/settings/waha-manage/analyze/start</code>، والذي بدوره يُدخل العمليات في طابور (<span class="en-term">Queue</span>) الـ <span class="en-term">Backend</span> لكي لا يتم حظر الـ <span class="en-term">API</span> لتخطي الحد المسموح به (<span class="en-term">Rate Limit</span>).
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Backend -->
+            <section id="backend" class="card p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="p-3 bg-green-500 bg-opacity-10 text-green-500 rounded-xl">
+                        <i class="ph ph-database text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold">هيكلية الـ <span class="en-term">Backend</span> (الخوادم والمنطق)</h2>
+                </div>
+                
+                <!-- Webhook Processing -->
+                <h3 class="font-bold text-lg mb-3 flex items-center gap-2"><i class="ph-fill ph-plugs-connected text-green-500"></i> معالجة الأحداث (<span class="en-term">ProcessWahaWebhookJob</span>)</h3>
+                <p class="leading-relaxed mb-4 text-sm">
+                    عندما يتم استقبال رسالة جديدة عبر واتساب، تقوم <span class="en-term">WAHA</span> بإرسال <span class="en-term">Webhook</span> إلى النظام. يتم استلامه وتحويله إلى <span class="en-term">Job</span> يعمل في الخلفية لمعالجة الرسالة كالتالي:
+                </p>
+                <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mb-6">
+                    <ol class="list-decimal list-inside space-y-3 text-sm font-semibold">
+                        <li><strong><span class="en-term">Resolve Contact</span>:</strong> البحث عن جهة الاتصال بـ <span class="en-term">Phone / ChatId</span> وإنشاءها إن لم تكن موجودة.</li>
+                        <li><strong><span class="en-term">Resolve Conversation</span>:</strong> استرجاع أو إنشاء محادثة (<span class="en-term">Conversation</span>) مخصصة لواتساب.</li>
+                        <li><strong><span class="en-term">Resolve Session</span>:</strong> فتح جلسة جديدة للمحادثة أو استكمال جلسة مفتوحة.</li>
+                        <li><strong><span class="en-term">Insert Message</span>:</strong> إدخال الرسالة إلى قاعدة البيانات وتحديث الـ <span class="en-term">unread_count</span> وتاريخ آخر رسالة.</li>
+                        <li><strong><span class="en-term">Dispatch AI Analyze</span>:</strong> إرسال الرسالة إلى <span class="en-term">AnalyzePeopleConnectMessageJob</span> لكي يرد عليها الذكاء الاصطناعي أو يُحللها.</li>
+                        <li><strong><span class="en-term">Realtime Broadcasting</span>:</strong> بث الرسالة فورياً للواجهة (عبر <span class="en-term">Laravel Reverb</span>) ليراها المستخدم بدون تحديث.</li>
+                    </ol>
+                </div>
+
+                <!-- Sync Models -->
+                <h3 class="font-bold text-lg mb-3 flex items-center gap-2"><i class="ph-fill ph-arrows-merge text-blue-500"></i> عمليات المزامنة المتزامنة (<span class="en-term">WahaSyncProcess Model</span>)</h3>
+                <p class="leading-relaxed mb-4 text-sm">
+                    لأجل مزامنة البيانات القديمة (تاريخ الرسائل وجهات الاتصال) يتم استخدام موديل <span class="en-term">WahaSyncProcess</span>. وظيفته تتبع حالة المزامنة لمنع انهيار النظام:
+                </p>
+                <ul class="list-disc list-inside space-y-2 text-sm mb-4">
+                    <li>يحتفظ بحقول مثل: <span class="en-term">total_items, processed_items, status</span> لتغذية الواجهة الأمامية بالـ <span class="en-term">Progress</span>.</li>
+                    <li>يحتفظ بـ <span class="en-term">last_cursor_id</span> لكي يتم استكمال المزامنة في حال توقفت العملية (<span class="en-term">Pagination / Offset</span>).</li>
+                </ul>
+
+            </section>
+
+            <!-- Section: Workflows -->
+            <section id="workflows" class="card p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="p-3 bg-yellow-500 bg-opacity-10 text-yellow-500 rounded-xl">
+                        <i class="ph ph-git-merge text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold">دورات العمل (<span class="en-term">Workflows</span>)</h2>
+                </div>
+
+                <div class="mt-6">
+                    <h3 class="font-bold text-lg mb-6"><span class="en-term">Message Ingestion Workflow</span></h3>
+                    
+                    <div class="step-container">
+                        <div class="step-circle">1</div>
+                        <h4 class="font-bold mb-1">الاستقبال (<span class="en-term">Ingestion</span>)</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">يقوم مزود <span class="en-term">WAHA</span> بإرسال <span class="en-term">Payload</span> يحتوي على الرسالة ورقم المرسل. يتم حفظه خاماً للحماية من الضياع في <span class="en-term">PeopleConnectRawProviderEvent</span>.</p>
+                    </div>
+
+                    <div class="step-container">
+                        <div class="step-circle">2</div>
+                        <h4 class="font-bold mb-1">المعالجة في الخلفية (<span class="en-term">Background Queue</span>)</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">يلتقط طابور <span class="en-term">Laravel Queue</span> (عبر <span class="en-term">Redis</span>) هذا الحدث ويبدأ بحقن البيانات في جداول (<span class="en-term">Contacts, Conversations, Messages</span>).</p>
+                    </div>
+
+                    <div class="step-container">
+                        <div class="step-circle">3</div>
+                        <h4 class="font-bold mb-1">الذكاء الاصطناعي والاستجابة (<span class="en-term">AI & Response</span>)</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">بناءً على الرسالة، يتم استدعاء ميزة الـ <span class="en-term">LLM</span> لتحليل نية المرسل، أو تحسين ملف تعريف العميل (استخراج صفاته)، أو توليد رد تلقائي وبثه لواجهة الويب.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Database Changes -->
+            <section id="database" class="card p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="p-3 bg-red-500 bg-opacity-10 text-red-500 rounded-xl">
+                        <i class="ph ph-hard-drives text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold">تأثيرات قاعدة البيانات (<span class="en-term">Database Migrations</span>)</h2>
+                </div>
+                <p class="leading-relaxed mb-4 text-sm">
+                    لربط هذا النظام المتكامل، تم تعديل قاعدة البيانات لإضافة الحقول التالية:
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="p-4 border rounded-lg" style="border-color: var(--border-color); background-color: var(--bg-primary);">
+                        <h4 class="font-bold mb-2 flex items-center gap-2"><i class="ph ph-address-book text-blue-500"></i> <span class="en-term">Contacts Table</span></h4>
+                        <ul class="list-disc list-inside text-sm space-y-1">
+                            <li><span class="en-term">waha_contact_id</span>: مُعرف فريد للرقم من واتساب.</li>
+                            <li><span class="en-term">is_waha_synced</span>: حالة المزامنة.</li>
+                        </ul>
+                    </div>
+                    <div class="p-4 border rounded-lg" style="border-color: var(--border-color); background-color: var(--bg-primary);">
+                        <h4 class="font-bold mb-2 flex items-center gap-2"><i class="ph ph-chat-circle-text text-green-500"></i> <span class="en-term">Messages Table</span></h4>
+                        <ul class="list-disc list-inside text-sm space-y-1">
+                            <li><span class="en-term">waha_message_id</span>: مُعرف الرسالة في واتساب لمنع التكرار (<span class="en-term">Duplicate Check</span>).</li>
+                            <li><span class="en-term">provider_payload_hash</span>: لحماية الـ <span class="en-term">Data Integrity</span>.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Accordion Logic
+        document.querySelectorAll('.accordion-header').forEach(button => {
+            button.addEventListener('click', () => {
+                const accordionItem = button.parentElement;
+                const isActive = accordionItem.classList.contains('accordion-active');
+                
+                // Close all
+                document.querySelectorAll('.accordion').forEach(item => {
+                    item.classList.remove('accordion-active');
+                });
+
+                // Open current if it wasn't active
+                if (!isActive) {
+                    accordionItem.classList.add('accordion-active');
+                }
+            });
+        });
+
+        // Search Logic
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const sections = document.querySelectorAll('.searchable-content section');
+            
+            sections.forEach(section => {
+                const text = section.innerText.toLowerCase();
+                if (text.includes(term)) {
+                    section.style.display = 'block';
+                } else {
+                    section.style.display = 'none';
+                }
+            });
+        });
+
+        // Theme Toggle Logic
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const body = document.body;
+
+        // Check local storage for theme
+        if (localStorage.getItem('theme') === 'dark') {
+            body.classList.add('dark-mode');
+            themeIcon.classList.replace('ph-moon', 'ph-sun');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            
+            if (body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+                themeIcon.classList.replace('ph-moon', 'ph-sun');
+            } else {
+                localStorage.setItem('theme', 'light');
+                themeIcon.classList.replace('ph-sun', 'ph-moon');
+            }
+        });
+
+        // TOC active link observer
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.toc-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= (sectionTop - 150)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

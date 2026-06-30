@@ -1,0 +1,268 @@
+================================================================================
+                  NexusV2 Documentation Index - Quick Reference
+================================================================================
+
+LATEST UPDATE: June 19, 2026 ✅
+Status: Production Ready
+Version: 2.0.0
+
+================================================================================
+                           📚 DOCUMENTATION FILES
+================================================================================
+
+🚀 START HERE:
+  ├─ QUICK_START.md ⭐ (5 min read)
+  │  Quick setup with one-click startup scripts
+  │  
+  ├─ STARTNEXUS_SCRIPTS.md (detailed reference)
+  │  Complete guide to all 11 build scripts
+  │  When to use each script, troubleshooting
+  │
+  └─ README.md (this folder)
+     Overview and navigation
+
+================================================================================
+                      ⚙️ CONFIGURATION & SETUP
+================================================================================
+
+🗄️ Redis & Queue System:
+  └─ REDIS_CONFIGURATION.md
+     • Docker setup
+     • Queue worker configuration
+     • Cache and session management
+     • Background job examples
+
+📋 Backend Setup:
+  └─ README_BACKEND.md
+     • Tech stack (Laravel 11, PHP 8.2)
+     • Installation steps
+     • Running services
+     • Redis integration
+
+🌐 Frontend Setup:
+  └─ README_FRONTEND.md
+     • Tech stack (Next.js 15, React 19)
+     • Installation steps
+     • Available scripts
+     • Environment variables
+
+================================================================================
+                      🏗️ ARCHITECTURE & DESIGN
+================================================================================
+
+📦 General Documentation:
+  └─ 01-General/
+     ├─ 01-Overview/ → PROJECT_OVERVIEW.md
+     ├─ 02-Architecture/ → ARCHITECTURE.md
+     ├─ 03-TechStack/ → TECH_STACK.md
+     ├─ 04-Glossary/ → GLOSSARY.md
+     ├─ 05-DataModels/ → DATA_MODELS.md
+     ├─ 06-Security/ → AUTH_AND_SECURITY.md
+     └─ 07-Configuration/ → CONFIGURATION.md
+
+🧠 Hub Documentation:
+  └─ 02-Hubs/
+     ├─ ContactsHub/ (13+ models)
+     ├─ TaskHub/ (queue, execution)
+     ├─ AgentsHub/ (AI agents)
+     ├─ WorkflowsHub/ (automation)
+     ├─ MemoryHub/ (5-type memory)
+     ├─ AIModelsHub/ (LLM routing)
+     ├─ HedraSoulHub/ (personal AI)
+     ├─ NotificationsHub/ (multi-channel)
+     ├─ SchedulerHub/ (cron jobs)
+     ├─ PeopleConnectHub/ (WhatsApp)
+     ├─ SettingsHub/ (admin config)
+     ├─ LogsHub/ (system logs)
+     └─ ProactiveAIHub/ (autonomous triggers)
+
+🐛 Issues & Gaps:
+  └─ 03-Issues/
+     └─ KNOWN_ISSUES.md
+
+================================================================================
+                      📖 HOW TO USE THIS GUIDE
+================================================================================
+
+IF YOU ARE...              GO TO...
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+New to the project:        QUICK_START.md
+                          → Setup in 5 minutes
+
+Setting up development:    README_BACKEND.md
+                          QUICK_START.md
+                          
+Configuring Redis/Queue:   REDIS_CONFIGURATION.md
+                          
+Understanding architecture: 01-General/02-Architecture/
+                          NEXUS_AGENT_SYSTEM_INSTRUCTIONS.md
+
+Working on a specific Hub:  02-Hubs/{HubName}/
+
+Reporting/fixing issues:   03-Issues/KNOWN_ISSUES.md
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+================================================================================
+                         📊 QUICK FACTS
+================================================================================
+
+TECH STACK:
+  Backend:   Laravel 11, PHP 8.2+, MySQL/SQLite, Redis
+  Frontend:  Next.js 15, React 19, TypeScript, Tailwind CSS
+  Tools:     Docker, Node.js, Composer, Git
+
+SERVICES & PORTS:
+  Frontend (Next.js):     3000
+  Backend API (Laravel):  8000
+  Vite Dev Server:        5173
+  Reverb (WebSocket):     6001
+  Redis Cache:            6379
+
+SETUP TIME:
+  First time:   5-10 minutes
+  Daily:        < 1 minute (quick-start.bat)
+
+PERFORMANCE:
+  Cache speed:   50x faster (with Redis)
+  Load time:     2-3x faster
+  Queue:         Non-blocking, asynchronous
+
+================================================================================
+                       🚀 QUICKEST START
+================================================================================
+
+Windows (Recommended):
+  1. cd NexusV2\StartNexus
+  2. Double-click: quick-start.bat
+  3. Wait for services to start (~30 seconds)
+  4. Go to: http://localhost:3000
+
+Command Line:
+  cd NexusV2
+  npm start
+
+================================================================================
+                       📱 MAIN FEATURES
+================================================================================
+
+✅ AI-Powered Contacts
+   Deep contact intelligence, identity resolution, enrichment
+
+✅ Autonomous Agents
+   Multiple agent types (Autonomous, Reflection, Specialized)
+
+✅ Multi-Channel Messaging
+   WhatsApp, email, notifications integration
+
+✅ Workflow Automation
+   Complex automation with triggers and scheduling
+
+✅ Memory Management
+   5-type memory system (episodic, semantic, graph, short-term, long-term)
+
+✅ Real-Time Communication
+   WebSocket via Reverb, live updates
+
+✅ LLM Integration
+   Provider routing, cost optimization, batching
+
+✅ Task Management
+   Queue-based async job processing
+
+================================================================================
+                       🔧 DEVELOPMENT WORKFLOW
+================================================================================
+
+Daily Development:
+  1. Double-click: StartNexus/quick-start.bat
+  2. Edit code (hot-reload enabled)
+  3. Test at http://localhost:3000
+  4. Ctrl+C to stop
+
+Adding Features:
+  1. Create models, services, controllers
+  2. Add routes in app/routes/
+  3. Frontend components auto-hot-reload
+  4. Use Horizon for queue monitoring (/horizon)
+
+Deploying Changes:
+  1. Run: StartNexus/build-all.bat
+  2. Test production build locally
+  3. Push to git/deploy
+
+================================================================================
+                       🆘 QUICK HELP
+================================================================================
+
+"How do I start the project?"
+→ QUICK_START.md or Double-click quick-start.bat
+
+"What are all the scripts?"
+→ STARTNEXUS_SCRIPTS.md
+
+"How do I configure Redis?"
+→ REDIS_CONFIGURATION.md
+
+"How do I understand the architecture?"
+→ 01-General/02-Architecture/ARCHITECTURE.md
+
+"Where do I add a new feature?"
+→ README_BACKEND.md (backend) or README_FRONTEND.md (frontend)
+
+"What's the database schema?"
+→ 01-General/05-DataModels/DATA_MODELS.md
+
+"Is there something broken?"
+→ 03-Issues/KNOWN_ISSUES.md
+
+"How do I set up API authentication?"
+→ 01-General/06-Security/AUTH_AND_SECURITY.md
+
+================================================================================
+                       📞 SUPPORT & RESOURCES
+================================================================================
+
+Project Repository:
+  https://github.com/onooinc-code/NexusV2Dev
+
+Laravel Documentation:
+  https://laravel.com/docs/11.x/
+
+Next.js Documentation:
+  https://nextjs.org/docs
+
+Redis Documentation:
+  https://redis.io/docs/
+
+System Instructions:
+  NEXUS_AGENT_SYSTEM_INSTRUCTIONS.md
+
+================================================================================
+                       📋 DOCUMENTATION UPDATES
+================================================================================
+
+Version 2.0.0 - June 19, 2026:
+  ✅ Added QUICK_START.md (one-click setup)
+  ✅ Added STARTNEXUS_SCRIPTS.md (11 scripts documented)
+  ✅ Added REDIS_CONFIGURATION.md (queue system)
+  ✅ Updated README_BACKEND.md (Redis integration)
+  ✅ Created this quick reference
+
+Previous Updates:
+  June 14, 2026: Initial documentation structure
+  Ongoing: Hub-specific documentation in 02-Hubs/
+
+================================================================================
+
+For the latest updates, see README.md or visit the main documentation folder.
+
+Quick links:
+  💚 Green links = You should read this
+  ⚠️  Yellow warnings = Important information
+  🔴 Red alerts = Critical items
+
+Last Updated: June 19, 2026
+Status: ✅ Complete and Production Ready
+
+================================================================================

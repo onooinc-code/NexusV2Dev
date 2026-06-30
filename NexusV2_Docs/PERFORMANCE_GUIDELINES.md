@@ -8,7 +8,7 @@ Set performance expectations and rules for Nexus so the system remains responsiv
 ## 1. Performance Targets
 - API response latency: < 2 seconds for 95% of requests
 - Memory retrieval latency: < 500ms average
-- Frontend first paint: < 1 second on modern devices
+ 
 - Background task scheduling: < 5 second enqueue time
 
 ## 2. Caching Strategy
@@ -37,12 +37,4 @@ Set performance expectations and rules for Nexus so the system remains responsiv
 
 ## 6. Frontend Performance
 - Lazy-load non-critical components
-- Use asset hashing and caching via Vite
-- Optimize images and icons
-- Minimize DOM complexity for chat views
-
-## 7. Observability
-- Track response times per endpoint and per hub
-- Monitor memory and queue utilization
-- Alert when key performance thresholds are breached
-- Capture performance metrics in LogsHub and dashboard
+ 

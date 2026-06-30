@@ -1,0 +1,247 @@
+# Implementation Tasks — NexusHub Dashboard
+
+## Task Overview
+
+Replace the prototype `app/page.tsx` with the production NexusHub Dashboard as specified
+in requirements.md and design.md. Tasks are ordered to respect dependencies: shared
+infrastructure first, then hooks, then components, then the page orchestrator, then tests.
+
+---
+
+## Tasks
+
+- [ ] 1. Foundation — TypeScript types and API layer
+  - [ ] 1.1 Create `types/dashboard.ts` with all shared interfaces
+    - Export `TrendIndicator`, `AiProviderRow`, `AiUsage`, `AgentEntry`, `JobEntry`, `RecentContact`
+    - Export `MemoryHealth`, `ProactiveSuggestion`, `ScheduledEntry`, `DashboardStats`
+    - Export `ServiceHealth`, `DashboardHealth`, `ActivityEvent`, `ActivityFeedResponse`
+    - _Requirements: 1.2, 2.2, 3.5, 4.1, 5.2, 6.2–6.3, 7.2, 8.2, 10.2, 11.2_
+  - [ ] 1.2 Create `lib/api/dashboard.ts` with all typed API functions
+    - Implement `fetchDashboardStats`, `fetchDashboardHealth`, `fetchActivityFeed`
+    - Implement `retryJob`, `triggerMaintenance`, `approveSuggestion`, `dismissSuggestion`
+    - All calls via `apiClient` from `@/lib/api/client` — no raw fetch
+    - _Requirements: 1.1, 2.1, 3.2, 6.6, 8.6, 9.6, 10.5, 10.6_
+
+- [ ] 2. Custom Hooks
+  - [ ] 2.1 Create `hooks/useDashboardStats.ts`
+    - Fetch `GET /api/v1/dashboard/stats` on mount using `fetchDashboardStats`
+    - Poll every 60 000 ms via `setInterval`; clear interval on unmount
+    - Pause/resume interval on `visibilitychange` (hidden → pause, visible → resume)
+    - Compute `changedKeys: Set<string>` by comparing current vs previous stats values
+    - Return `{ stats, loading, error, changedKeys, refetch }`
+    - _Requirements: 1.1, 1.4, 1.5, 1.7, 1.8, 4.11_
+  - [ ] 2.2 Create `hooks/useDashboardHealth.ts`
+    - Fetch `GET /api/v1/dashboard/health` on mount using `fetchDashboardHealth`
+    - Poll every 30 000 ms; clear on unmount
+    - Compute effective badge color per service: offline → red; latency_ms > 2000 → amber; error_rate > 0.05 → amber; degraded → amber; online → green; fetch failed → gray
+    - Return `{ services, offlineServices, loading, error }`
+    - _Requirements: 2.1, 2.3, 2.4, 2.5, 2.7, 2.9_
+  - [ ] 2.3 Create `hooks/useActivityFeed.ts`
+    - Fetch `fetchActivityFeed({ limit: 20 })` on mount; store `next_cursor`
+    - Expose `prependEvent(event: ActivityEvent)` — prepends and caps list at 100
+    - Implement `loadMore()` — calls `fetchActivityFeed({ before: cursor })` and appends
+    - Return `{ events, loadMore, hasMore, loadingMore }`
+    - _Requirements: 3.2, 3.4, 3.9_
+  - [ ] 2.4 Create `hooks/useDashboardWebSocket.ts`
+    - Subscribe to `Echo.private('dashboard.${userId}')` on mount; unsubscribe on unmount
+    - Track `wsStatus: 'connected' | 'reconnecting' | 'disconnected'`
+    - Accept callback map and dispatch: `CognitiveEvent`, `agent.updated`, `job.updated`, `contact.updated`, `suggestion.created`, `scheduler.job_added`
+    - Use `useRef` for callback map to avoid re-subscribing on render
+    - _Requirements: 3.1, 3.3, 3.8, 3.10, 6.10, 7.7, 7.8, 10.7, 11.8_
+  - [ ] 2.5 Create `hooks/useSchedulerCountdowns.ts`
+    - Accept `entries: ScheduledEntry[]` and `onExpired: (id: string) => void`
+    - Tick every 60 000 ms; compute countdown labels ("in X min" / "in X hr" / "Imminent")
+    - Expose `isImminent(id: string): boolean` — true when `fires_at` within 5 minutes
+    - Call `onExpired(id)` when an entry's `fires_at` passes
+    - Return `{ countdowns: Record<string, string>, isImminent }`
+    - _Requirements: 11.3, 11.4, 11.5_
+  - [ ] 2.6 Create `hooks/useJobRetry.ts`
+    - Call `POST /api/v1/jobs/{id}/retry` via `retryJob(id)`
+    - On success: return updated job status `pending` and trigger toast
+    - On error: trigger error toast with returned message
+    - Return `{ retryJob: (id: string) => void, retryingId: string | null }`
+    - _Requirements: 6.6, 6.7_
+  - [ ] 2.7 Create `hooks/useMaintenanceAction.ts`
+    - Call `POST /api/v1/memories/maintenance` via `triggerMaintenance(contactId?)`
+    - Track `maintenancePending: boolean`
+    - On 202 success: show `NxToast` "Maintenance job queued successfully." / "Global maintenance job queued."
+    - On error: show `NxToast` with error severity and returned message
+    - Return `{ triggerMaintenance, maintenancePending }`
+    - _Requirements: 8.6, 8.7, 9.6, 9.8, 9.9, 9.10_
+
+- [ ] 3. Dashboard Panel Components
+  - [ ] 3.1 Create `components/dashboard/SystemHealthStrip.tsx`
+    - Props: `services: ServiceHealth[]`, `loading: boolean`, `error: boolean`
+    - Map each service to `NxStatusBadge` with computed effective color
+    - Wrap each badge in `NxTooltip` showing name, latency_ms, error_rate %
+    - Render gray "unknown" badges when `error === true` (Req 2.9)
+    - Render full-width dismissible offline alert banner for any `status: offline` service (Req 2.6)
+    - Skeleton loading state via `NxSkeleton`
+    - Add `aria-label="{name}: {effectiveStatus}"` to each badge
+    - Export as `React.memo`
+    - _Requirements: 2.1, 2.3, 2.4, 2.5, 2.6, 2.8, 2.9_
+  - [ ] 3.2 Create `components/dashboard/KeyMetricsRow.tsx`
+    - Props: `stats: DashboardStats | null`, `loading: boolean`, `changedKeys: Set<string>`
+    - Render six `NxMetricCard` components in `grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6`
+    - Cards: Total Contacts (Users/blue), Active Conversations (MessageCircle/teal), Memories Stored (BrainCircuit/amber), Pending Tasks (CheckSquare/teal), Running Agents (Cpu/purple), Queued Jobs (Layers/green)
+    - Each card displays `Trend_Indicator` from `trends[key].direction` and `trends[key].delta`
+    - Apply `animate-value-flash` CSS class when key is in `changedKeys`; remove after 600 ms via `useEffect`
+    - Show `NxSkeleton` placeholders while loading
+    - Export as `React.memo`
+    - _Requirements: 4.1–4.11_
+  - [ ] 3.3 Create `components/dashboard/QuickActionsBar.tsx`
+    - Props: `maintenancePending: boolean`, `onTriggerMaintenance: () => void`, `onNewConversation: () => void`, `onImportContacts: () => void`, `onRunAiAnalysis: () => void`, `onViewLogs: () => void`
+    - Render five `NxActionButton` in `flex flex-wrap gap-3`
+    - All buttons `disabled={maintenancePending}`; "Trigger Maintenance" shows `NxThinkingIndicator` icon during flight
+    - "Trigger Maintenance" has `aria-busy={maintenancePending}`
+    - Export as `React.memo`
+    - _Requirements: 9.1–9.10_
+  - [ ] 3.4 Create `components/dashboard/CognitiveActivityFeed.tsx`
+    - Props: `events: ActivityEvent[]`, `wsStatus: string`, `loadMore: () => void`, `hasMore: boolean`, `loadingMore: boolean`
+    - Render event rows inside `NxGlassCard` with `aria-live="polite"` on list container
+    - Each row: hub icon, message, severity badge, hub name, relative timestamp
+    - Row backgrounds: `bg-red-500/10` (error), `bg-amber-500/10` (warning), transparent (info)
+    - New items animated with `animate-in fade-in slide-in-from-top-2 duration-300`
+    - Each row `React.memo`-ized with `key={event.id}`
+    - Show "Reconnecting…" indicator when `wsStatus === 'reconnecting'`
+    - "Load more" button at bottom; hide when `!hasMore`
+    - _Requirements: 3.3, 3.5, 3.6, 3.7, 3.8, 3.9_
+  - [ ] 3.5 Create `components/dashboard/AiUsagePanel.tsx`
+    - Props: `aiUsage: AiUsage | null`, `loading: boolean`
+    - Two-column sub-grid inside `NxGlassCard`: cost headlines (today/month) + top model left; `DashboardChart` area chart right
+    - Provider table rows: name / `toLocaleString()` tokens / cost USD / progress bar
+    - Progress bar filled to `rate_limit_pct`%; badge "Near Limit" (amber ≥80%), "Rate Limited" (red ≥95%)
+    - `NxEmptyState` with "No AI activity recorded yet." when `provider_breakdown` empty
+    - Export as `React.memo`
+    - _Requirements: 5.1–5.8_
+  - [ ] 3.6 Create `components/dashboard/ActiveAgentsJobsPanel.tsx`
+    - Props: `agents: AgentEntry[]`, `jobs: JobEntry[]`, `loading: boolean`, `onRetryJob: (id: string) => void`
+    - Agent sub-section: map `agents` → `NxAgentCard` (name, role, `NxAgentStatusOrb`, token_usage)
+    - Jobs sub-section: map `jobs` → `NxQueuePill` (name, queue, status badge, progress bar)
+    - Failed jobs: red border + "Retry" `NxActionButton` calling `onRetryJob(job.id)`
+    - `NxEmptyState` for empty agents / empty jobs separately
+    - Export as `React.memo`
+    - _Requirements: 6.1–6.9_
+  - [ ] 3.7 Create `components/dashboard/RecentContactsPanel.tsx`
+    - Props: `contacts: RecentContact[]`, `loading: boolean`
+    - Each row as `<button>` navigating to `/contacts/{id}` via `useRouter`
+    - Display: name, `formatDistanceToNow(last_interaction_at)`, truncated snippet, channel icon badge, reply_mode badge (green/amber/gray)
+    - "View all" link → `/contacts` in panel header
+    - `NxEmptyState` with "No recent contact activity." when empty
+    - Export as `React.memo`
+    - _Requirements: 7.1–7.6_
+  - [ ] 3.8 Create `components/dashboard/MemoryHealthPanel.tsx`
+    - Props: `memoryHealth: MemoryHealth | null`, `loading: boolean`, `onRunMaintenance: () => void`, `maintenancePending: boolean`
+    - Display `total_records`, `low_confidence_count` (amber if > 100), `expired_count` (red if > 0)
+    - Horizontal stacked bar for `confidence_distribution`: green/amber/red segments proportional to counts
+    - `last_consolidation_at` as relative label via `formatDistanceToNow`; "Never run" if null
+    - "Run Maintenance" `NxActionButton` with `NxThinkingIndicator` while pending
+    - Export as `React.memo`
+    - _Requirements: 8.1–8.9_
+  - [ ] 3.9 Create `components/dashboard/ProactiveAiPanel.tsx`
+    - Props: `suggestions: ProactiveSuggestion[]`, `loading: boolean`, `onApprove: (id: string) => void`, `onDismiss: (id: string) => void`
+    - Each suggestion as a sub-card: category icon, title, truncated body (120 chars), priority badge (red/amber/gray), relative timestamp
+    - "Approve" and "Dismiss" `NxActionButton` per card
+    - Header count badge showing `suggestions.length`
+    - "View all" link → `/proactive-ai`
+    - `NxEmptyState` with "No pending suggestions — Nexus is watching." when empty
+    - Export as `React.memo`
+    - _Requirements: 10.1–10.10_
+  - [ ] 3.10 Create `components/dashboard/SchedulerOverviewPanel.tsx`
+    - Props: `entries: ScheduledEntry[]`, `loading: boolean`, `countdowns: Record<string, string>`, `isImminent: (id: string) => boolean`
+    - Each entry: type icon (Layers/Bell/GitMerge), name, countdown label (amber when `isImminent`), `NxStatusBadge` for status
+    - "View scheduler" link → `/scheduler`
+    - `NxEmptyState` with "No upcoming scheduled jobs." when empty
+    - Export as `React.memo`
+    - _Requirements: 11.1–11.7_
+  - [ ] 3.11 Create `components/dashboard/DashboardGrid.tsx`
+    - Tailwind grid: `grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6`
+    - Column spans per panel per breakpoint as specified in design.md
+    - Accepts all panel components as children via explicit named slots/props
+    - Export as `React.memo`
+    - _Requirements: 12.1, 12.2, 12.3_
+  - [ ] 3.12 Create `components/dashboard/index.ts`
+    - Re-export all dashboard components from this barrel file
+    - _Requirements: (all panel requirements)_
+
+- [ ] 4. Add animation keyframes to `globals.css`
+  - Append `@keyframes value-flash` and `.animate-value-flash` to `app/globals.css`
+  - `0%` → `background-color: rgba(0, 122, 255, 0.2)`, `100%` → transparent, 600 ms ease-out forwards
+  - _Requirements: 4.11_
+
+- [ ] 5. Page Orchestrator — replace `app/page.tsx`
+  - Replace prototype `app/page.tsx` with production `DashboardPage` (`"use client"`)
+  - Instantiate all hooks: `useDashboardStats`, `useDashboardHealth`, `useActivityFeed`, `useDashboardWebSocket`, `useSchedulerCountdowns`, `useMaintenanceAction`
+  - Maintain local `useState` slices for `suggestions`, `contacts`, `agents`, `jobs`, `scheduled` seeded from stats and updated by WS callbacks
+  - Wire WebSocket callback map: `CognitiveEvent` → `prependEvent`, `agent.updated` → merge agents, `job.updated` → merge jobs, `contact.updated` → merge/prepend contacts (cap 10), `suggestion.created` → prepend suggestions, `scheduler.job_added` → insert sorted by `fires_at` (cap 3)
+  - Render `AppLayout` > `SystemHealthStrip` > stats error banner (with Retry) > `KeyMetricsRow` > `QuickActionsBar` > `DashboardGrid` with all panels
+  - Render `NxImportModal` and `NxAiAnalysisModal` controlled by modal state
+  - Pass `onExpired` to `useSchedulerCountdowns` to trigger `refetch` on stats
+  - _Requirements: 1.1–1.8, 2.1–2.9, 3.1–3.10, 4.1–4.11, 5.1–5.8, 6.1–6.10, 7.1–7.8, 8.1–8.9, 9.1–9.10, 10.1–10.10, 11.1–11.8, 12.1–12.4_
+
+- [ ] 6. Property-Based Tests (fast-check)
+  - [ ] 6.1 Property 1 — Stats polling respects visibility
+    - Test `useDashboardStats`: for any sequence of `visibilitychange` events, interval is active iff `document.visibilityState === 'visible'`; no fetch issued while hidden
+    - _Requirements: 1.7, 1.8_
+  - [ ] 6.2 Property 2 — Activity feed cap invariant
+    - Test `useActivityFeed`: for any sequence of prepend/load-more operations, `events.length ≤ 100` always holds; oldest entries discarded first
+    - _Requirements: 3.4_
+  - [ ] 6.3 Property 3 — Health badge color dominance
+    - Test `useDashboardHealth` color logic: `offline` always → red; `latency_ms > 2000` or `error_rate > 0.05` never → green regardless of `status`
+    - _Requirements: 2.3, 2.4, 2.5_
+  - [ ] 6.4 Property 4 — Scheduler countdown ordering
+    - Test scheduler state after any `scheduler.job_added` events: list always sorted ascending by `fires_at` and `count ≤ 3`
+    - _Requirements: 11.2, 11.8_
+  - [ ] 6.5 Property 5 — Contact list cap after WebSocket updates
+    - Test contact state reducer: for any sequence of `contact.updated` events, `contacts.length ≤ 10`; new unknown contact prepends and removes oldest
+    - _Requirements: 7.8_
+  - [ ] 6.6 Property 6 — Quick Actions lockout during maintenance
+    - Test `QuickActionsBar`: for any state where `maintenancePending === true`, all five buttons have `disabled === true`
+    - _Requirements: 9.8_
+  - [ ] 6.7 Property 7 — Suggestion removal after action
+    - Test suggestions state: after successful approve/dismiss for id `X`, `X` is absent from list without page reload
+    - _Requirements: 10.5, 10.6_
+  - [ ] 6.8 Property 8 — Metric flash is transient
+    - Test `KeyMetricsRow`: for any key entering `changedKeys`, the `animate-value-flash` class is absent from the DOM element after 600 ms regardless of subsequent re-renders
+    - _Requirements: 4.11_
+
+- [ ] 7. Unit and Integration Tests (Jest + React Testing Library)
+  - [ ] 7.1 Unit test `useDashboardStats`
+    - Mock `apiClient`; assert polling starts/stops on visibility events
+    - Assert error state set on HTTP 4xx/5xx; `refetch()` clears error on success
+    - Assert `changedKeys` populated when values change between cycles
+    - _Requirements: 1.1, 1.5, 1.6, 1.7, 1.8_
+  - [ ] 7.2 Unit test `useDashboardHealth`
+    - Assert effective badge color for all combinations of `status`, `latency_ms`, `error_rate`
+    - Assert gray output when fetch fails
+    - _Requirements: 2.3, 2.4, 2.5, 2.9_
+  - [ ] 7.3 Unit test `useActivityFeed`
+    - Assert 100-event cap and oldest-first discard
+    - Assert `prependEvent` inserts at index 0
+    - Assert `loadMore` appends and tracks cursor
+    - _Requirements: 3.2, 3.4, 3.9_
+  - [ ] 7.4 Unit test `useSchedulerCountdowns`
+    - Assert countdown labels at various time differences
+    - Assert `isImminent` returns true within 5 minutes
+    - Assert `onExpired` callback fires when `fires_at` passes
+    - _Requirements: 11.3, 11.4, 11.5_
+  - [ ] 7.5 Integration test `SystemHealthStrip`
+    - Renders gray "unknown" badges when health fetch errors (Req 2.9)
+    - Offline banner appears for offline service; dismisses on click (Req 2.6)
+    - Tooltip shows name/latency/error_rate on hover (Req 2.8)
+    - _Requirements: 2.6, 2.8, 2.9_
+  - [ ] 7.6 Integration test `CognitiveActivityFeed`
+    - New WS event prepended at top with correct severity background colour
+    - "Reconnecting…" indicator shown when `wsStatus === 'reconnecting'`
+    - "Load more" button calls `loadMore` and is hidden when `!hasMore`
+    - _Requirements: 3.3, 3.6, 3.7, 3.8, 3.9_
+  - [ ] 7.7 Integration test `ActiveAgentsJobsPanel`
+    - "Retry" button calls `onRetryJob` with correct job id
+    - Failed job row has red border
+    - Empty states render correctly
+    - _Requirements: 6.6, 6.7, 6.8, 6.9_
+  - [ ] 7.8 Integration test `QuickActionsBar`
+    - All five buttons disabled when `maintenancePending === true`
+    - "Trigger Maintenance" button shows `NxThinkingIndicator` during flight
+    - Each button triggers the correct callback
+    - _Requirements: 9.2–9.10_

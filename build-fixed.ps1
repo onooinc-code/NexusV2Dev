@@ -174,7 +174,7 @@ try {
     Log-Message "Optimizing autoloader..." "INFO"
     $prevEAP = $ErrorActionPreference
     $ErrorActionPreference = "Continue"
-    composer dump-autoload --optimize 2>$null | Out-Null
+    & composer dump-autoload --optimize --no-interaction *>&1 | Out-Null
     $ErrorActionPreference = $prevEAP
     Log-Message "Autoloader optimization complete" "SUCCESS"
     
@@ -253,22 +253,18 @@ try {
     Log-Message "Running pre-flight health checks..." "INFO"
     Write-Host ""
     
-    # Check if ports are available (Improvement #15: Port conflict detection)
-    Log-Message "Checking port availability..." "INFO"
-    
-    $ports = @(
-        @{Port = $ReverbPort; Name = "Reverb"},
-        @{Port = $ApiPort; Name = "API"},
-        @{Port = $VitePort; Name = "Vite"}
-    )
-    
-    $portIssues = @()
-    foreach ($portInfo in $ports) {
-        if (-not (Check-PortAvailable $portInfo.Port $portInfo.Name)) {
-            $portIssues += "$($portInfo.Name) (port $($portInfo.Port)) is already in use"
-            Log-Message "Port $($portInfo.Port) ($($portInfo.Name)) already in use - may conflict" "WARNING"
+    # Check if ports are available and kill zombie processes
+    Log-Message "Killing existing processes on required ports..." "INFO"
+    $prevEAP = $ErrorActionPreference
+    $ErrorActionPreference = "SilentlyContinue"
+    $ports = @($ReverbPort, $ApiPort, $VitePort, $NextPort)
+    foreach ($p in $ports) {
+        $connections = Get-NetTCPConnection -LocalPort $p -State Listen
+        foreach ($conn in $connections) {
+            Stop-Process -Id $conn.OwningProcess -Force
         }
     }
+    $ErrorActionPreference = $prevEAP
     
     # Improvement #16: Cache clear for fresh start
     Log-Message "Clearing runtime caches for fresh start..." "INFO"
@@ -276,6 +272,7 @@ try {
     $ErrorActionPreference = "Continue"
     php artisan cache:clear 2>$null | Out-Null
     php artisan route:clear 2>$null | Out-Null
+    php artisan config:clear 2>$null | Out-Null
     $ErrorActionPreference = $prevEAP
     Log-Message "Runtime caches cleared" "SUCCESS"
     
@@ -305,7 +302,7 @@ try {
     Save-ProcessId $viteProcess.Id "Vite"
     Log-Message "Vite Dev Server started with PID $($viteProcess.Id)" "SUCCESS"
     
-    # Start Queue Worker (Improvement #18: Background job processing)
+    # Start Queue Worker (Horizon requires pcntl extension which is unavailable on Windows)
     Log-Message "Starting Queue Worker..." "INFO"
     $queueProcess = Start-Process -FilePath "php" -ArgumentList "artisan", "queue:work", "--tries=3", "--timeout=90" `
         -PassThru -NoNewWindow -RedirectStandardOutput (Join-Path $logsPath "queue.log") -RedirectStandardError (Join-Path $logsPath "queue-error.log")

@@ -99,6 +99,8 @@ ContactHub must support:
 - Primary channel and preferred channel.
 - Confidence score for identity resolution.
 - Duplicate detection by phone, WhatsApp, email, Facebook ID, normalized name, and semantic similarity.
+- Categorize the Contacts with Contact Category
+
 
 Required contact fields:
 

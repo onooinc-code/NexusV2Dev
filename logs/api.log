@@ -1,5 +1,15 @@
 
-   INFO  Server running on [http://127.0.0.1:8000].  
+In Connection.php line 825:
+                                                                                                                       
+  SQLSTATE[HY000] [2002] A connection attempt failed because the connected party did not properly respond after a per  
+  iod of time, or established connection failed because connected host has failed to respond (Connection: mysql, SQL:  
+   select exists (select 1 from information_schema.tables where table_schema = 'nex_db' and table_name = 'workflow_ev  
+  ent_triggers' and table_type in ('BASE TABLE', 'SYSTEM VERSIONED')) as `exists`)                                     
+                                                                                                                       
 
-  Press Ctrl+C to stop the server
+In Connector.php line 67:
+                                                                                                                       
+  SQLSTATE[HY000] [2002] A connection attempt failed because the connected party did not properly respond after a per  
+  iod of time, or established connection failed because connected host has failed to respond                           
+                                                                                                                       
 

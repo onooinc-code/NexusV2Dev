@@ -54,9 +54,6 @@ Consumer best practices
 - Schema validation: use JSON Schema/Avro to validate and reject malformed events early.
 - Backpressure: consumers should manage concurrency and pause consumption when downstream is congested.
 
-Security
-- Sign events using service keys (HMAC) for webhook consumers; use mTLS for in-cluster broker clients.
-- Avoid embedding secrets in payloads; include references (ids) instead.
 
 Observability
 - Emit metrics: event publish rate, consumer lag, retry counts, DLQ counts.

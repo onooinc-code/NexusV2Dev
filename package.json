@@ -1,0 +1,19 @@
+{
+  "name": "nexus-v2-dev",
+  "version": "2.0.0",
+  "description": "NexusV2 Root Development Environment",
+  "scripts": {
+    "start": "concurrently -n \"REVERB,API,VITE,QUEUE,NEXT\" -c \"bgBlue.bold,bgMagenta.bold,bgGreen.bold,bgYellow.bold,bgCyan.bold\" \"npm run start:reverb\" \"npm run start:api\" \"npm run start:vite\" \"npm run start:queue\" \"npm run start:next\"",
+    "start:reverb": "cd Nexus-backend && php artisan reverb:start --host=0.0.0.0 --port=6001",
+    "start:api": "cd Nexus-backend && php artisan serve --port=8000 --no-reload",
+    "start:vite": "cd Nexus-backend && npm run dev -- --port 5173",
+    "start:queue": "cd Nexus-backend && php artisan queue:work --queue=default,contacts --tries=3 --timeout=600",
+    "start:next": "cd Nexus-Frontend && npm run dev -- -p 3000",
+    "install:all": "npm install && cd Nexus-backend && composer install && npm install && cd ../Nexus-Frontend && npm install",
+    "build:all": "npm run build:frontend",
+    "build:frontend": "cd Nexus-Frontend && npm run build"
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

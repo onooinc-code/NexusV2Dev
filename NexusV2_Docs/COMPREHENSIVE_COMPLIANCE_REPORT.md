@@ -38,6 +38,7 @@ The following core modules, tables, services, and visual controls are entirely a
 - **Approval Gate Modal Control**: The `NxApprovalGateModal` exists as a file, but there is no unified workspace modal triggering system in `page.tsx`. It relies on text buttons in the side panel.
 
 ### 1.3 ContactHub (06)
+
 - **AI Intelligence Extraction Pipeline**: The `ContactIntelligenceExtractionPipeline` is defined, but it lacks the prompt assembler, baseline calculator, and finding writer required to generate evidence-backed `ContactPersona` and `ContactTalkSpecs` records.
 - **Pinecone Vector Search & Duplicate Profiling**: The Pinecone integration (`SaveToPineconeJob`, `VectorizeMemoryJob`) exists in the background jobs folder but is **completely missing** from the `ContactMemoryMaintenancePipeline` and identity resolution systems.
 - **Unified Conversations Summary Panel**: Cross-channel message timeline summaries, decision extraction, promise tracking, and open loop alerts are not implemented in the frontend UI tabs.

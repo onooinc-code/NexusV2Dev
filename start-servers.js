@@ -5,7 +5,7 @@ const backend = path.join(__dirname, 'Nexus-backend');
 const frontend = path.join(__dirname, 'Nexus-Frontend');
 
 const commands = [
-  { name: 'Reverb', cmd: 'php', args: ['artisan', 'reverb:start', '--host=0.0.0.0', '--port=6001'], cwd: backend, color: '\x1b[34m' },
+  { name: 'Reverb', cmd: 'cmd', args: ['/c', 'php artisan config:clear && php artisan reverb:start --host=0.0.0.0 --port=6001'], cwd: backend, color: '\x1b[34m' },
   { name: 'API', cmd: 'php', args: ['artisan', 'serve', '--host=127.0.0.1', '--port=8000'], cwd: backend, color: '\x1b[31m' },
   { name: 'Queue', cmd: 'php', args: ['artisan', 'queue:work', '--tries=1', '--sleep=3'], cwd: backend, color: '\x1b[35m' },
   { name: 'Vite', cmd: 'npm', args: ['run', 'dev'], cwd: backend, color: '\x1b[33m' },
